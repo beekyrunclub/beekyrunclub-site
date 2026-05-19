@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Beeky Run Club — Silivri'nin İlk Koşu Kulübü</title>
+<meta name="description" content="Beeky Run Club — Silivri sahilinde haftanın iki günü buluşan koşu kulübü. İyi ki Beeky." />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Beeky Run Club" />
+<meta property="og:description" content="Silivri'nin ilk koşu kulübü. İyi ki Beeky." />
+<meta property="og:type" content="website" />
+
+<!-- Favicon -->
+<link rel="icon" type="image/jpeg" href="logo.jpeg" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --blue: #1E3FCC;
+    --blue-deep: #0A1F6B;
+    --blue-ink: #050A2E;
+    --cream: #F4EEDF;
+    --cream-warm: #EFE7D2;
+    --black: #0A0A0A;
+    --white: #FFFFFF;
+    --line: rgba(10, 10, 10, 0.12);
+
+    --display: "Big Shoulders Display", "Impact", sans-serif;
+    --body: "Instrument Sans", system-ui, sans-serif;
+    --serif: "Instrument Serif", Georgia, serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+  @media (max-width: 900px) { html { scroll-padding-top: 70px; } }
+
+  body {
+    font-family: var(--body);
+    background: var(--cream);
+    color: var(--blue-ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--blue); color: var(--cream); }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(244, 238, 223, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--line);
+    transition: padding 0.3s ease;
+  }
+
+  nav .logo-mark {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+    color: var(--blue-ink);
+  }
+
+  nav .logo-mark img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  nav .logo-mark span {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 1.4rem;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  nav .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  nav .nav-links a {
+    color: var(--blue-ink);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    position: relative;
+    transition: color 0.3s;
+  }
+
+  nav .nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background: var(--blue);
+    transition: width 0.3s ease;
+  }
+
+  nav .nav-links a:hover { color: var(--blue); }
+  nav .nav-links a:hover::after { width: 100%; }
+
+  .mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .mobile-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--blue-ink);
+    margin: 5px 0;
+    transition: 0.3s;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 100vh;
+    padding: 8rem 2rem 3rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -10%; right: -20%;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, var(--blue) 0%, transparent 70%);
+    opacity: 0.08;
+    z-index: 0;
+  }
+
+  .hero-rings {
+    position: absolute;
+    top: 50%;
+    right: -200px;
+    transform: translateY(-50%);
+    width: 800px; height: 800px;
+    pointer-events: none;
+    opacity: 0.5;
+    z-index: 0;
+  }
+
+  .hero-rings::before,
+  .hero-rings::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid var(--blue);
+    animation: pulse 8s ease-in-out infinite;
+  }
+
+  .hero-rings::after {
+    inset: 80px;
+    animation-delay: 2s;
+  }
+
+  .hero-rings .ring-3 {
+    position: absolute;
+    inset: 160px;
+    border-radius: 50%;
+    border: 1px solid var(--blue);
+    animation: pulse 8s ease-in-out infinite;
+    animation-delay: 4s;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.03); }
+  }
+
+  .hero-content { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+  .hero-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-weight: 600;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .hero-meta span:nth-child(2) { letter-spacing: 0.1em; }
+
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(4.5rem, 14vw, 12rem);
+    line-height: 0.85;
+    letter-spacing: -0.02em;
+    color: var(--blue-ink);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.15s ease forwards;
+  }
+
+  .hero h1 .blue { color: var(--blue); }
+
+  .hero h1 .italic-tag {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-style: italic;
+    font-size: 0.45em;
+    letter-spacing: 0;
+    color: var(--blue);
+    display: inline-block;
+    transform: translateY(-0.3em);
+    margin: 0 0.2em;
+  }
+
+  .hero-bottom {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 4rem;
+    align-items: end;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    padding-top: 3rem;
+  }
+
+  .hero-intro {
+    font-size: 1.1rem;
+    max-width: 480px;
+    line-height: 1.6;
+    color: var(--blue-ink);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s ease forwards;
+  }
+
+  .hero-intro strong {
+    font-weight: 600;
+    color: var(--blue);
+  }
+
+  .next-run {
+    border: 1.5px solid var(--blue-ink);
+    padding: 1.5rem;
+    background: var(--cream-warm);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.55s ease forwards;
+    position: relative;
+  }
+
+  .next-run::before {
+    content: "•";
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    color: var(--blue);
+    animation: blink 1.5s ease-in-out infinite;
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .next-run .label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .next-run .day {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 2.2rem;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.25rem;
+  }
+
+  .next-run .time {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 1.2rem;
+    color: var(--blue);
+    margin-bottom: 0.75rem;
+  }
+
+  .next-run .place {
+    font-size: 0.85rem;
+    color: var(--blue-ink);
+    opacity: 0.7;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ MARQUEE ============ */
+  .marquee {
+    background: var(--blue);
+    color: var(--cream);
+    padding: 1.5rem 0;
+    overflow: hidden;
+    border-top: 1px solid var(--blue-deep);
+    border-bottom: 1px solid var(--blue-deep);
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 3rem;
+    white-space: nowrap;
+    animation: scroll 30s linear infinite;
+    font-family: var(--display);
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+  }
+
+  .marquee-track span {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .marquee-track span::after {
+    content: "★";
+    color: var(--cream);
+    opacity: 0.6;
+    font-size: 1.5rem;
+  }
+
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ============ SECTIONS ============ */
+  section { padding: 6rem 2rem; position: relative; }
+
+  .container { max-width: 1400px; margin: 0 auto; }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    border-bottom: 1.5px solid var(--blue-ink);
+    padding-bottom: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .section-num {
+    font-family: var(--display);
+    font-size: 0.95rem;
+    letter-spacing: 0.2em;
+    color: var(--blue);
+    font-weight: 500;
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+  }
+
+  .section-title em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--blue);
+  }
+
+  /* ============ ABOUT ============ */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    color: var(--blue-ink);
+  }
+
+  .about-text p:first-child::first-letter {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 4rem;
+    float: left;
+    line-height: 0.85;
+    margin: 0.15rem 0.5rem 0 0;
+    color: var(--blue);
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1.5px solid var(--blue-ink);
+  }
+
+  .stat {
+    padding: 2rem 1.5rem;
+    border-right: 1.5px solid var(--blue-ink);
+    border-bottom: 1.5px solid var(--blue-ink);
+  }
+
+  .stat:nth-child(2n) { border-right: none; }
+  .stat:nth-child(3), .stat:nth-child(4) { border-bottom: none; }
+
+  .stat .num {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--blue);
+    margin-bottom: 0.5rem;
+  }
+
+  .stat .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--blue-ink);
+    opacity: 0.7;
+  }
+
+  /* ============ SCHEDULE ============ */
+  #antrenmanlar { background: var(--blue); color: var(--cream); }
+
+  #antrenmanlar .section-head { border-color: var(--cream); }
+  #antrenmanlar .section-num { color: var(--cream); opacity: 0.7; }
+  #antrenmanlar .section-title { color: var(--cream); }
+  #antrenmanlar .section-title em { color: var(--cream-warm); opacity: 0.9; }
+
+  .schedule {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .run-card {
+    background: var(--cream);
+    color: var(--blue-ink);
+    padding: 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s ease;
+    border: 1.5px solid var(--cream);
+  }
+
+  .run-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .run-card .bib {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    background: var(--blue);
+    color: var(--cream);
+    padding: 0.35rem 0.7rem;
+    border-radius: 2px;
+  }
+
+  .run-card .day {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .run-card .time {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 2.5rem;
+    color: var(--blue);
+    line-height: 1;
+    margin-bottom: 2rem;
+    letter-spacing: 0.02em;
+  }
+
+  .run-card .details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .run-card .detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+  }
+
+  .run-card .detail-row .key {
+    color: var(--blue-ink);
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+  }
+
+  .run-card .detail-row .val {
+    font-weight: 600;
+    color: var(--blue-ink);
+  }
+
+  .schedule-note {
+    margin-top: 3rem;
+    padding: 1.5rem 2rem;
+    border: 1px dashed var(--cream);
+    color: var(--cream);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    text-align: center;
+    opacity: 0.85;
+  }
+
+  /* ============ MEETING POINT ============ */
+  .meeting {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .meeting-info h3 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .meeting-info .subtitle {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--blue);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .meeting-info p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .map-placeholder {
+    aspect-ratio: 4 / 3;
+    background: var(--blue-deep);
+    border: 1.5px solid var(--blue-ink);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .map-placeholder::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(244, 238, 223, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244, 238, 223, 0.08) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  .map-placeholder .pin {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: var(--cream);
+  }
+
+  .map-placeholder .pin-dot {
+    width: 18px;
+    height: 18px;
+    background: var(--cream);
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    position: relative;
+    animation: pinPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pinPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(244, 238, 223, 0.6); }
+    50% { box-shadow: 0 0 0 20px rgba(244, 238, 223, 0); }
+  }
+
+  .map-placeholder .pin-label {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+  }
+
+  .map-placeholder .pin-sub {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: 0.25rem;
+  }
+
+  /* ============ CALENDAR ============ */
+  .calendar-empty {
+    border: 1.5px dashed var(--blue-ink);
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  .calendar-empty .icon {
+    font-family: var(--display);
+    font-size: 4rem;
+    color: var(--blue);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .calendar-empty h3 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .calendar-empty p {
+    color: var(--blue-ink);
+    opacity: 0.7;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* ============ GALLERY ============ */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 180px;
+    gap: 0.75rem;
+  }
+
+  .photo {
+    background: var(--blue-deep);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cream);
+    font-family: var(--display);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    font-size: 0.85rem;
+  }
+
+  .photo:nth-child(1) { grid-column: span 3; grid-row: span 2; }
+  .photo:nth-child(2) { grid-column: span 3; }
+  .photo:nth-child(3) { grid-column: span 2; }
+  .photo:nth-child(4) { grid-column: span 1; }
+  .photo:nth-child(5) { grid-column: span 2; }
+  .photo:nth-child(6) { grid-column: span 4; }
+
+  .photo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, var(--blue) 0%, var(--blue-deep) 100%);
+    opacity: 0.9;
+  }
+
+  .photo span {
+    position: relative;
+    z-index: 2;
+    opacity: 0.5;
+  }
+
+  /* ============ SPONSORS ============ */
+  #sponsorlar { background: var(--cream-warm); }
+
+  .sponsor-card {
+    border: 1.5px solid var(--blue-ink);
+    padding: 4rem 3rem;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    background: var(--cream);
+    position: relative;
+  }
+
+  .sponsor-card::before {
+    content: "ANA SPONSOR";
+    position: absolute;
+    top: -12px;
+    left: 2rem;
+    background: var(--blue);
+    color: var(--cream);
+    font-family: var(--display);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    padding: 0.35rem 0.85rem;
+  }
+
+  .sponsor-info h3 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 3.5rem;
+    line-height: 0.95;
+    margin-bottom: 0.5rem;
+  }
+
+  .sponsor-info .role {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--blue);
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sponsor-info p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .sponsor-logo {
+    aspect-ratio: 1;
+    background: var(--blue);
+    color: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    padding: 2rem;
+  }
+
+  /* ============ FORMS ============ */
+  #kayit { background: var(--blue-ink); color: var(--cream); }
+  #kayit .section-head { border-color: var(--cream); }
+  #kayit .section-num { color: var(--cream); opacity: 0.7; }
+  #kayit .section-title { color: var(--cream); }
+  #kayit .section-title em { color: var(--cream-warm); }
+
+  .form-intro {
+    max-width: 640px;
+    margin-bottom: 3rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    opacity: 0.85;
+  }
+
+  .form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 900px;
+  }
+
+  .form .full { grid-column: 1 / -1; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .field label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0.85;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid rgba(244, 238, 223, 0.4);
+    color: var(--cream);
+    padding: 0.65rem 0;
+    font-family: var(--body);
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    outline: none;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: rgba(244, 238, 223, 0.45);
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-bottom-color: var(--cream);
+  }
+
+  .field select {
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23F4EEDF'%3E%3Cpath d='M5 7l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0 center;
+    background-size: 18px;
+  }
+
+  .field select option { background: var(--blue-ink); color: var(--cream); }
+
+  .field textarea { resize: vertical; min-height: 100px; }
+
+  .checks {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding-top: 0.25rem;
+  }
+
+  .check {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+
+  .check input {
+    appearance: none;
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--cream);
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .check input:checked {
+    background: var(--cream);
+  }
+
+  .check input:checked::after {
+    content: "✓";
+    position: absolute;
+    inset: 0;
+    color: var(--blue-ink);
+    font-size: 0.85rem;
+    line-height: 16px;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .btn {
+    margin-top: 1rem;
+    background: var(--cream);
+    color: var(--blue-ink);
+    border: 1.5px solid var(--cream);
+    padding: 1.1rem 2.5rem;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.3s;
+    justify-self: start;
+  }
+
+  .btn:hover {
+    background: transparent;
+    color: var(--cream);
+  }
+
+  /* ============ CONTACT ============ */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-info p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .contact-channels {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .contact-channels li {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1rem;
+  }
+
+  .contact-channels .key {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+
+  .contact-channels .val {
+    font-size: 1.15rem;
+    color: var(--blue-ink);
+  }
+
+  .contact-channels a {
+    color: var(--blue-ink);
+    text-decoration: none;
+    border-bottom: 1.5px solid transparent;
+    transition: border-color 0.3s;
+  }
+
+  .contact-channels a:hover { border-bottom-color: var(--blue); }
+
+  /* Contact form lives in cream area */
+  #iletisim .form .field input,
+  #iletisim .form .field textarea,
+  #iletisim .form .field select {
+    border-bottom-color: var(--line);
+    color: var(--blue-ink);
+  }
+
+  #iletisim .form .field input::placeholder,
+  #iletisim .form .field textarea::placeholder {
+    color: rgba(10, 10, 10, 0.35);
+  }
+
+  #iletisim .form .field input:focus,
+  #iletisim .form .field textarea:focus,
+  #iletisim .form .field select:focus {
+    border-bottom-color: var(--blue);
+  }
+
+  #iletisim .form .field label { color: var(--blue-ink); opacity: 0.85; }
+
+  #iletisim .btn {
+    background: var(--blue);
+    color: var(--cream);
+    border-color: var(--blue);
+  }
+
+  #iletisim .btn:hover {
+    background: transparent;
+    color: var(--blue);
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    background: var(--blue-ink);
+    color: var(--cream);
+    padding: 4rem 2rem 2rem;
+  }
+
+  .footer-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(244, 238, 223, 0.15);
+  }
+
+  .footer-brand img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+  }
+
+  .footer-brand h4 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  .footer-brand p {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--cream);
+    opacity: 0.7;
+    font-size: 1rem;
+  }
+
+  .footer-col h5 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .footer-col a {
+    color: var(--cream);
+    text-decoration: none;
+    font-size: 0.95rem;
+    opacity: 0.85;
+    transition: opacity 0.3s;
+  }
+  .footer-col a:hover { opacity: 1; }
+
+  .footer-bottom {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.85rem;
+    opacity: 0.6;
+  }
+
+  .footer-bottom .tag {
+    font-family: var(--serif);
+    font-style: italic;
+  }
+
+  /* ============ REVEAL ANIMATIONS ============ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.25rem; }
+    nav .nav-links { display: none; }
+    nav .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0; right: 0;
+      background: var(--cream);
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--line);
+      gap: 1.25rem;
+    }
+    .mobile-toggle { display: block; }
+
+    .hero { padding: 7rem 1.25rem 2.5rem; }
+    .hero-meta { font-size: 0.65rem; }
+    .hero-bottom {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding-top: 2rem;
+    }
+    .hero-rings { right: -400px; opacity: 0.3; }
+
+    section { padding: 4rem 1.25rem; }
+
+    .section-head { flex-direction: column; align-items: flex-start; }
+
+    .about-grid,
+    .schedule,
+    .meeting,
+    .form,
+    .contact-grid,
+    .sponsor-card,
+    .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+
+    .about-stats { grid-template-columns: 1fr 1fr; }
+
+    .sponsor-card { padding: 3rem 1.5rem; }
+    .sponsor-card::before { left: 1rem; }
+
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 140px;
+    }
+    .photo:nth-child(n) { grid-column: span 1; grid-row: span 1; }
+    .photo:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+
+    .marquee-track { font-size: 1.4rem; gap: 2rem; }
+    .marquee-track span { gap: 2rem; }
+
+    .footer-bottom { justify-content: flex-start; flex-direction: column; align-items: flex-start; }
+  }
+
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 4rem; }
+    .run-card { padding: 2rem 1.5rem; }
+    .run-card .time { font-size: 2rem; }
+    .stat .num { font-size: 2.5rem; }
+    .sponsor-info h3 { font-size: 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav>
+  <a href="#" class="logo-mark">
+    <img src="logo.jpeg" alt="Beeky Run Club logo" />
+    <span>BEEKY</span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hakkimizda">Hakkımızda</a></li>
+    <li><a href="#antrenmanlar">Antrenmanlar</a></li>
+    <li><a href="#bulusma">Buluşma</a></li>
+    <li><a href="#takvim">Takvim</a></li>
+    <li><a href="#sponsorlar">Sponsor</a></li>
+    <li><a href="#kayit">Kayıt</a></li>
+    <li><a href="#iletisim">İletişim</a></li>
+  </ul>
+  <button class="mobile-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="hero-rings"><div class="ring-3"></div></div>
+
+  <div class="hero-content">
+    <div class="hero-meta">
+      <span>EST. 2025 — SİLİVRİ</span>
+      <span>41° 04' K · 28° 14' D</span>
+      <span>HAFTADA 2 KOŞU</span>
+    </div>
+    <h1>
+      BE<span class="italic-tag">iyi&nbsp;ki</span><span class="blue">BEEKY</span>
+    </h1>
+  </div>
+
+  <div class="hero-bottom">
+    <p class="hero-intro">
+      Silivri sahilinde haftanın iki günü buluşan koşu kulübü.
+      Çarşamba akşamı serinliğinde, Pazar sabahı güneşinde.
+      <strong>Tempon kendi temponken, hızın bizimle bulur.</strong>
+    </p>
+
+    <div class="next-run">
+      <div class="label">Bir Sonraki Koşu</div>
+      <div class="day" id="nextDay">ÇARŞAMBA</div>
+      <div class="time" id="nextTime">21:00</div>
+      <div class="place">Solde Cafe · Silivri Sahil</div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span>İYİ Kİ BEEKY</span>
+    <span>BE BEEKY</span>
+    <span>SİLİVRİ SAHİL</span>
+    <span>HAFTANIN İKİ GÜNÜ</span>
+    <span>İYİ Kİ BEEKY</span>
+    <span>BE BEEKY</span>
+    <span>SİLİVRİ SAHİL</span>
+    <span>HAFTANIN İKİ GÜNÜ</span>
+  </div>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<section id="hakkimizda">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="section-num">01 / HAKKIMIZDA</span>
+      <h2 class="section-title">İlk koşumuz<br><em>Silivri'den</em> başladı.</h2>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-text">
+        <p>Silivri sahili yıllardır koşucuları çağırıyordu — ama buluşulacak bir kulüp yoktu. Beeky, bu eksikliği gidermek için 2025'in sonunda kuruldu.</p>
+        <p>Bizim için koşmak; yarışmaktan önce, buluşmaktır. Pazar sabahları güneşle başlayan tempolar, Çarşamba akşamları serinlikte tamamlanan kilometreler ve sonunda Solde Cafe'de paylaşılan sohbetler.</p>
+        <p>Silivri'nin ilk koşu kulübü olarak buradayız: sporu, sosyalleşmeyle aynı yola çıkardık. İlk kilometrende de, yüzüncüde de aramıza katılabilirsin.</p>
+      </div>
+
+      <div class="about-stats">
+        <div class="stat">
+          <div class="num">2025</div>
+          <div class="label">Kuruluş</div>
+        </div>
+        <div class="stat">
+          <div class="num">2</div>
+          <div class="label">Haftalık Koşu</div>
+        </div>
+        <div class="stat">
+          <div class="num">1.</div>
+          <div class="label">Silivri'nin</div>
+        </div>
+        <div class="stat">
+          <div class="num">0₺</div>
+          <div class="label">Üyelik Ücreti</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCHEDULE ============ -->
+<section id="antrenmanlar">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="section-num">02 / ANTRENMANLAR</span>
+      <h2 class="section-title">Haftalık <em>program.</em></h2>
+    </div>
+
+    <div class="schedule">
+      <div class="run-card">
+        <div class="bib">N° 01</div>
+        <div class="day">ÇARŞAMBA</div>
+        <div class="time">21:00</div>
+        <div class="details">
+          <div class="detail-row"><span class="key">Tip</span><span class="val">Akşam Koşusu</span></div>
+          <div class="detail-row"><span class="key">Buluşma</span><span class="val">Solde Cafe</span></div>
+          <div class="detail-row"><span class="key">Rota</span><span class="val">Silivri Sahil</span></div>
+          <div class="detail-row"><span class="key">Seviye</span><span class="val">Tüm seviyeler</span></div>
+        </div>
+      </div>
+
+      <div class="run-card">
+        <div class="bib">N° 02</div>
+        <div class="day">PAZAR</div>
+        <div class="time">09:00</div>
+        <div class="details">
+          <div class="detail-row"><span class="key">Tip</span><span class="val">Sabah Koşusu</span></div>
+          <div class="detail-row"><span class="key">Buluşma</span><span class="val">Solde Cafe</span></div>
+          <div class="detail-row"><span class="key">Rota</span><span class="val">Silivri Sahil</span></div>
+          <div class="detail-row"><span class="key">Seviye</span><span class="val">Tüm seviyeler</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="schedule-note">
+      Hava durumu veya özel duyurular için Instagram ve WhatsApp gruplarımızı takip edebilirsin.
+      İlk koşunda biraz erken gelirsen seni tanımak ve gruba dahil etmek için bolca zamanımız olur.
+    </div>
+  </div>
+</section>
+
+<!-- ============ MEETING POINT ============ -->
+<section id="bulusma">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="section-num">03 / BULUŞMA NOKTASI</span>
+      <h2 class="section-title">Solde Cafe'de <em>başlıyoruz.</em></h2>
+    </div>
+
+    <div class="meeting">
+      <div class="meeting-info">
+        <h3>SOLDE CAFE</h3>
+        <p class="subtitle">başlangıç & bitiş noktamız</p>
+        <p>Her antrenman aynı yerde başlar, aynı yerde biter. Solde Cafe; ısınma, sohbet ve koşu sonrası kahve için kulübümüzün doğal evi.</p>
+        <p>Sahile sıfır konumu, geniş terası ve sıcak ekibiyle yalnızca bir buluşma noktası değil, aynı zamanda <strong>ana sponsorumuz.</strong></p>
+      </div>
+
+      <div class="map-placeholder">
+        <div class="pin">
+          <div class="pin-dot"></div>
+          <div class="pin-label">SOLDE CAFE</div>
+          <div class="pin-sub">Silivri Sahil — Harita yakında</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RACE CALENDAR ============ -->
+<section id="takvim">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="section-num">04 / YARIŞ TAKVİMİ</span>
+      <h2 class="section-title">Sırada <em>ne var?</em></h2>
+    </div>
+
+    <div class="calendar-empty">
+      <div class="icon">→</div>
+      <h3>Yakında Burada</h3>
+      <p>Birlikte katılacağımız yarışları ve özel etkinlikleri buradan duyuracağız. Şimdilik en güncel bilgi için Instagram ve WhatsApp grubumuzu takip edebilirsin.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section id="galeri">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="section-num">05 / GALERİ</span>
+      <h2 class="section-title">Adım <em>adım,</em><br>birlikte.</h2>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="photo"><span>FOTO 01</span></div>
+      <div class="photo"><span>FOTO 02</span></div>
+      <div class="photo"><span>FOTO 03</span></div>
+      <div class="photo"><span>FOTO 04</span></div>
+      <div class="photo"><span>FOTO 05</span></div>
+      <div class="photo"><span>FOTO 06</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPONSORS ============ -->
+<section id="sponsorlar">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="section-num">06 / SPONSOR</span>
+      <h2 class="section-title">Yolu birlikte <em>açıyoruz.</em></h2>
+    </div>
+
+    <div class="sponsor-card">
+      <div class="sponsor-info">
+        <h3>SOLDE CAFE</h3>
+        <p class="role">buluşma noktamız & ana sponsor</p>
+        <p>Beeky Run Club'un kapısı Solde Cafe'nin kapısıdır. Antrenman öncesi ve sonrası kulübümüze açtıkları alan, bizi bir grup olmaktan çıkarıp bir kulübe dönüştürdü. Yolda yanımızda oldukları için teşekkürler.</p>
+      </div>
+      <div class="sponsor-logo">
+        SOLDE<br>CAFE
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REGISTRATION ============ -->
+<section id="kayit">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="section-num">07 / KAYIT OL</span>
+      <h2 class="section-title">Aramıza <em>katıl.</em></h2>
+    </div>
+
+    <p class="form-intro">
+      Üyelik tamamen ücretsiz. Bu formu doldurman bir taahhüt değil, sadece seni tanımamıza yardımcı oluyor. Bilgilerini aldıktan sonra WhatsApp grubuna eklenmen için seninle iletişime geçeceğiz.
+    </p>
+
+    <!-- Form action: Formspree veya Web3Forms endpoint'i buraya gelecek -->
+    <form class="form" action="https://formspree.io/f/YOUR_REGISTRATION_FORM_ID" method="POST">
+      <input type="hidden" name="_subject" value="Yeni Üyelik Başvurusu — Beeky Run Club" />
+      <input type="hidden" name="form_type" value="Kayıt Formu" />
+
+      <div class="field">
+        <label for="ad">Ad Soyad *</label>
+        <input id="ad" name="ad_soyad" type="text" required placeholder="Adın ve soyadın" />
+      </div>
+
+      <div class="field">
+        <label for="email">E-posta *</label>
+        <input id="email" name="email" type="email" required placeholder="ornek@mail.com" />
+      </div>
+
+      <div class="field">
+        <label for="tel">Telefon *</label>
+        <input id="tel" name="telefon" type="tel" required placeholder="05XX XXX XX XX" />
+      </div>
+
+      <div class="field">
+        <label for="yas">Yaş Aralığı</label>
+        <select id="yas" name="yas_araligi">
+          <option value="">Seçiniz</option>
+          <option>18-25</option>
+          <option>26-35</option>
+          <option>36-45</option>
+          <option>46-55</option>
+          <option>55+</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label>Tempo Seviyesi</label>
+        <select name="tempo_seviyesi">
+          <option value="">Hangi tempoda koşuyorsun?</option>
+          <option>İlk kez koşacağım</option>
+          <option>Rahat tempo — 6:00+ dk/km</option>
+          <option>Orta tempo — 5:00-6:00 dk/km</option>
+          <option>Hızlı tempo — 4:00-5:00 dk/km</option>
+          <option>Yarış temposu — 4:00 dk/km altı</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label>Hangi koşulara katılmak istersin?</label>
+        <div class="checks">
+          <label class="check"><input type="checkbox" name="katilim" value="Çarşamba 21:00" /> Çarşamba 21:00</label>
+          <label class="check"><input type="checkbox" name="katilim" value="Pazar 09:00" /> Pazar 09:00</label>
+          <label class="check"><input type="checkbox" name="katilim" value="İkisi de" /> İkisi de</label>
+        </div>
+      </div>
+
+      <div class="field full">
+        <label for="duy">Bizi nereden duydun?</label>
+        <select id="duy" name="kanal">
+          <option value="">Seçiniz</option>
+          <option>Instagram</option>
+          <option>Arkadaş tavsiyesi</option>
+          <option>Solde Cafe</option>
+          <option>Sahilde gördüm</option>
+          <option>Diğer</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label for="not">Eklemek istediğin bir şey var mı?</label>
+        <textarea id="not" name="notlar" placeholder="Sağlık durumu, koşu geçmişi veya merak ettiklerin..."></textarea>
+      </div>
+
+      <button class="btn" type="submit">KAYIT OL →</button>
+    </form>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="iletisim">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="section-num">08 / İLETİŞİM</span>
+      <h2 class="section-title">Bize <em>yazın.</em></h2>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <p>Sorun, öneriniz veya iş birliği talebiniz için bize buradan ulaşabilirsiniz. Mesajınızı en kısa sürede yanıtlıyoruz.</p>
+
+        <ul class="contact-channels">
+          <li>
+            <div class="key">E-posta</div>
+            <div class="val"><a href="mailto:info@beekyrunclub.com">info@beekyrunclub.com</a></div>
+          </li>
+          <li>
+            <div class="key">Lokasyon</div>
+            <div class="val">Solde Cafe, Silivri Sahil — İstanbul</div>
+          </li>
+          <li>
+            <div class="key">Instagram</div>
+            <div class="val"><a href="https://instagram.com/beekyrunclub" target="_blank" rel="noopener">@beekyrunclub</a></div>
+          </li>
+          <li>
+            <div class="key">WhatsApp & Strava</div>
+            <div class="val">Yakında bağlanacak</div>
+          </li>
+        </ul>
+      </div>
+
+      <form class="form" action="https://formspree.io/f/YOUR_CONTACT_FORM_ID" method="POST">
+        <input type="hidden" name="_subject" value="Beeky Run Club — İletişim Formu" />
+        <input type="hidden" name="form_type" value="İletişim" />
+
+        <div class="field full">
+          <label for="cad">Ad Soyad</label>
+          <input id="cad" name="ad_soyad" type="text" required placeholder="Adın ve soyadın" />
+        </div>
+
+        <div class="field">
+          <label for="cmail">E-posta</label>
+          <input id="cmail" name="email" type="email" required placeholder="ornek@mail.com" />
+        </div>
+
+        <div class="field">
+          <label for="konu">Konu</label>
+          <input id="konu" name="konu" type="text" placeholder="Mesajın konusu" />
+        </div>
+
+        <div class="field full">
+          <label for="mesaj">Mesaj</label>
+          <textarea id="mesaj" name="mesaj" required placeholder="Yazmak istediklerin..."></textarea>
+        </div>
+
+        <button class="btn" type="submit">GÖNDER →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="logo.jpeg" alt="Beeky Run Club" />
+      <h4>BEEKY RUN CLUB</h4>
+      <p>İyi ki Beeky.</p>
+    </div>
+
+    <div class="footer-col">
+      <h5>Keşfet</h5>
+      <ul>
+        <li><a href="#hakkimizda">Hakkımızda</a></li>
+        <li><a href="#antrenmanlar">Antrenmanlar</a></li>
+        <li><a href="#bulusma">Buluşma</a></li>
+        <li><a href="#takvim">Takvim</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h5>Katıl</h5>
+      <ul>
+        <li><a href="#kayit">Kayıt Ol</a></li>
+        <li><a href="#iletisim">İletişim</a></li>
+        <li><a href="#sponsorlar">Sponsorlar</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h5>Sosyal</h5>
+      <ul>
+        <li><a href="https://instagram.com/beekyrunclub" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="#">Strava</a></li>
+        <li><a href="#">WhatsApp</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© <span id="year">2026</span> Beeky Run Club · Silivri</span>
+    <span class="tag">Be Beeky.</span>
+  </div>
+</footer>
+
+<script>
+  // Year
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Next run widget — auto-pick closest upcoming
+  (function() {
+    const now = new Date();
+    const day = now.getDay(); // 0 Sun, 3 Wed
+    const hour = now.getHours();
+
+    // Wednesday 21:00 or Sunday 09:00
+    let next = "ÇARŞAMBA";
+    let time = "21:00";
+
+    // Determine which is closer
+    const nextWed = new Date(now);
+    nextWed.setDate(now.getDate() + ((3 - day + 7) % 7 || 7));
+    nextWed.setHours(21, 0, 0, 0);
+    if (day === 3 && hour < 21) { nextWed.setDate(now.getDate()); nextWed.setHours(21,0,0,0); }
+
+    const nextSun = new Date(now);
+    nextSun.setDate(now.getDate() + ((0 - day + 7) % 7 || 7));
+    nextSun.setHours(9, 0, 0, 0);
+    if (day === 0 && hour < 9) { nextSun.setDate(now.getDate()); nextSun.setHours(9,0,0,0); }
+
+    if (nextSun < nextWed) { next = "PAZAR"; time = "09:00"; }
+
+    document.getElementById("nextDay").textContent = next;
+    document.getElementById("nextTime").textContent = time;
+  })();
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll(".reveal");
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add("in-view");
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => io.observe(r));
+
+  // Close mobile menu on link click
+  document.querySelectorAll("#navLinks a").forEach(a => {
+    a.addEventListener("click", () => document.getElementById("navLinks").classList.remove("open"));
+  });
+</script>
+
+</body>
+</html>
