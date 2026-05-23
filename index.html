@@ -683,7 +683,7 @@
   .gallery-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    grid-auto-rows: 180px;
+    grid-auto-rows: 200px;
     gap: 0.75rem;
   }
 
@@ -691,36 +691,53 @@
     background: var(--blue-deep);
     position: relative;
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--cream);
-    font-family: var(--display);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    font-size: 0.85rem;
   }
 
-  .photo:nth-child(1) { grid-column: span 3; grid-row: span 2; }
-  .photo:nth-child(2) { grid-column: span 3; }
-  .photo:nth-child(3) { grid-column: span 2; }
-  .photo:nth-child(4) { grid-column: span 1; }
-  .photo:nth-child(5) { grid-column: span 2; }
-  .photo:nth-child(6) { grid-column: span 4; }
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    /* mat / soluk varsayılan görünüm */
+    filter: grayscale(100%) contrast(0.92) brightness(0.96);
+    opacity: 0.55;
+    transition: filter 0.55s ease, opacity 0.55s ease, transform 0.7s ease;
+  }
 
-  .photo::before {
+  .photo:hover img {
+    /* imleç üstündeyken net ve canlı */
+    filter: grayscale(0%) contrast(1) brightness(1);
+    opacity: 1;
+    transform: scale(1.04);
+  }
+
+  /* mavi vurgu — sadece mat haldeyken görünür, hover'da kaybolur */
+  .photo::after {
     content: "";
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(135deg, var(--blue) 0%, var(--blue-deep) 100%);
-    opacity: 0.9;
+    background: var(--blue);
+    mix-blend-mode: color;
+    opacity: 0.35;
+    pointer-events: none;
+    transition: opacity 0.55s ease;
   }
 
-  .photo span {
-    position: relative;
-    z-index: 2;
-    opacity: 0.5;
+  .photo:hover::after { opacity: 0; }
+
+  /* 7 fotoğraflık bento düzen */
+  .photo:nth-child(1) { grid-column: span 4; grid-row: span 2; }
+  .photo:nth-child(2) { grid-column: span 2; grid-row: span 2; }
+  .photo:nth-child(3) { grid-column: span 2; }
+  .photo:nth-child(4) { grid-column: span 4; }
+  .photo:nth-child(5) { grid-column: span 3; }
+  .photo:nth-child(6) { grid-column: span 3; }
+  .photo:nth-child(7) { grid-column: span 6; }
+
+  /* dokunmatik cihazlarda hover yok — fotoğraflar net gösterilsin */
+  @media (hover: none) {
+    .photo img { filter: none; opacity: 1; }
+    .photo::after { opacity: 0; }
   }
 
   /* ============ SPONSORS ============ */
@@ -1135,10 +1152,13 @@
 
     .gallery-grid {
       grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 140px;
+      grid-auto-rows: 150px;
     }
     .photo:nth-child(n) { grid-column: span 1; grid-row: span 1; }
     .photo:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .photo:nth-child(2) { grid-column: span 1; grid-row: span 2; }
+    .photo:nth-child(4) { grid-column: span 2; }
+    .photo:nth-child(7) { grid-column: span 2; }
 
     .marquee-track { font-size: 1.4rem; gap: 2rem; }
     .marquee-track span { gap: 2rem; }
@@ -1352,12 +1372,13 @@
     </div>
 
     <div class="gallery-grid">
-      <div class="photo"><span>FOTO 01</span></div>
-      <div class="photo"><span>FOTO 02</span></div>
-      <div class="photo"><span>FOTO 03</span></div>
-      <div class="photo"><span>FOTO 04</span></div>
-      <div class="photo"><span>FOTO 05</span></div>
-      <div class="photo"><span>FOTO 06</span></div>
+      <div class="photo"><img src="gallery-1.jpg" alt="Beeky Run Club sahil koşusu" loading="lazy" /></div>
+      <div class="photo"><img src="gallery-2.jpg" alt="Beeky Run Club forması" loading="lazy" /></div>
+      <div class="photo"><img src="gallery-3.jpg" alt="Beeky Run Club üyeleri Silivri sahilinde" loading="lazy" /></div>
+      <div class="photo"><img src="gallery-4.jpg" alt="Beeky Run Club grup fotoğrafı" loading="lazy" /></div>
+      <div class="photo"><img src="gallery-5.jpg" alt="Beeky Run Club Silivri meydanında koşu" loading="lazy" /></div>
+      <div class="photo"><img src="gallery-6.jpg" alt="Beeky Run Club etkinlik anı" loading="lazy" /></div>
+      <div class="photo"><img src="gallery-7.jpg" alt="Beeky Run Club Solde Cafe önünde" loading="lazy" /></div>
     </div>
   </div>
 </section>
