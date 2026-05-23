@@ -408,53 +408,107 @@
   }
 
   /* ============ ABOUT ============ */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.3fr;
-    gap: 5rem;
-    align-items: start;
-  }
-
-  .about-text p {
-    font-size: 1.15rem;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
+  .about-lead {
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    line-height: 1.6;
+    max-width: 820px;
     color: var(--blue-ink);
+    margin-bottom: 3rem;
   }
 
-  .about-text p:first-child::first-letter {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 4rem;
-    float: left;
-    line-height: 0.85;
-    margin: 0.15rem 0.5rem 0 0;
+  .about-lead strong {
     color: var(--blue);
+    font-weight: 600;
+  }
+
+  .about-divider {
+    width: 60px;
+    height: 3px;
+    background: var(--blue);
+    margin-bottom: 3rem;
+  }
+
+  .about-sub {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    letter-spacing: -0.01em;
+    line-height: 1;
+    margin-bottom: 0.75rem;
+  }
+
+  .about-sub-text {
+    font-size: 1.05rem;
+    color: var(--blue-ink);
+    opacity: 0.65;
+    margin-bottom: 2rem;
+  }
+
+  .about-items {
+    display: grid;
+    margin-bottom: 4rem;
+  }
+
+  .about-item {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 2rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--line);
+    transition: padding-left 0.3s ease;
+  }
+
+  .about-item:last-child { border-bottom: 1px solid var(--line); }
+
+  .about-item:hover { padding-left: 0.75rem; }
+
+  .about-item .item-num {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--blue);
+    letter-spacing: 0.1em;
+    padding-top: 0.35rem;
+  }
+
+  .about-item h4 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    letter-spacing: 0.01em;
+    margin-bottom: 0.6rem;
+    line-height: 1;
+  }
+
+  .about-item p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--blue-ink);
+    opacity: 0.8;
   }
 
   .about-stats {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    border: 1.5px solid var(--blue-ink);
-  }
-
-  .stat {
-    padding: 2rem 1.5rem;
-    border-right: 1.5px solid var(--blue-ink);
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1.5px solid var(--blue-ink);
     border-bottom: 1.5px solid var(--blue-ink);
   }
 
-  .stat:nth-child(2n) { border-right: none; }
-  .stat:nth-child(3), .stat:nth-child(4) { border-bottom: none; }
+  .stat {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    border-right: 1.5px solid var(--blue-ink);
+  }
+
+  .stat:last-child { border-right: none; }
 
   .stat .num {
     font-family: var(--display);
     font-weight: 800;
-    font-size: 3.5rem;
+    font-size: clamp(3rem, 7vw, 4.5rem);
     line-height: 1;
     color: var(--blue);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.6rem;
   }
 
   .stat .label {
@@ -903,9 +957,11 @@
     appearance: none;
     width: 18px; height: 18px;
     border: 1.5px solid var(--cream);
+    border-radius: 50%;
     cursor: pointer;
     position: relative;
     transition: background 0.2s;
+    flex-shrink: 0;
   }
 
   .check input:checked {
@@ -913,14 +969,11 @@
   }
 
   .check input:checked::after {
-    content: "✓";
+    content: "";
     position: absolute;
-    inset: 0;
-    color: var(--blue-ink);
-    font-size: 0.85rem;
-    line-height: 16px;
-    text-align: center;
-    font-weight: 700;
+    inset: 4px;
+    border-radius: 50%;
+    background: var(--blue-ink);
   }
 
   .btn {
@@ -941,6 +994,50 @@
   .btn:hover {
     background: transparent;
     color: var(--cream);
+  }
+
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .btn:disabled:hover {
+    background: var(--cream);
+    color: var(--blue-ink);
+  }
+
+  #iletisim .btn:disabled:hover {
+    background: var(--blue);
+    color: var(--cream);
+  }
+
+  .form-status {
+    grid-column: 1 / -1;
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: none;
+  }
+
+  .form-status.show { display: block; }
+
+  .form-status.ok {
+    background: rgba(244, 238, 223, 0.12);
+    border: 1px solid currentColor;
+  }
+
+  .form-status.err {
+    background: rgba(220, 80, 80, 0.12);
+    border: 1px solid #d05050;
+    color: #d05050;
+  }
+
+  /* iletişim formu açık zeminde — status rengi koyu */
+  #iletisim .form-status.ok {
+    background: rgba(30, 63, 204, 0.08);
+    border: 1px solid var(--blue);
+    color: var(--blue);
   }
 
   /* ============ CONTACT ============ */
@@ -1024,6 +1121,138 @@
     color: var(--blue);
   }
 
+  /* ============ KVKK ============ */
+  #kvkk { background: var(--cream-warm); }
+
+  .kvkk-intro {
+    max-width: 820px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--blue-ink);
+    opacity: 0.8;
+    margin-bottom: 0.75rem;
+  }
+
+  .kvkk-date {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-weight: 600;
+    margin-bottom: 2.5rem;
+  }
+
+  .kvkk-list {
+    max-width: 920px;
+    border-top: 1.5px solid var(--blue-ink);
+  }
+
+  .kvkk-item {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .kvkk-item summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+    color: var(--blue-ink);
+    transition: color 0.25s ease;
+  }
+
+  .kvkk-item summary::-webkit-details-marker { display: none; }
+
+  .kvkk-item summary:hover { color: var(--blue); }
+
+  .kvkk-item summary .toggle {
+    margin-left: auto;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .kvkk-item summary .toggle::before,
+  .kvkk-item summary .toggle::after {
+    content: "";
+    position: absolute;
+    background: var(--blue);
+    transition: transform 0.3s ease;
+  }
+
+  .kvkk-item summary .toggle::before {
+    top: 50%; left: 0;
+    width: 100%; height: 2px;
+    transform: translateY(-50%);
+  }
+
+  .kvkk-item summary .toggle::after {
+    left: 50%; top: 0;
+    width: 2px; height: 100%;
+    transform: translateX(-50%);
+  }
+
+  .kvkk-item[open] summary .toggle::after { transform: translateX(-50%) scaleY(0); }
+
+  .kvkk-item summary .kvkk-num {
+    font-size: 0.9rem;
+    color: var(--blue);
+    flex-shrink: 0;
+  }
+
+  .kvkk-body {
+    padding: 0 0 1.75rem 2.4rem;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--blue-ink);
+    opacity: 0.85;
+  }
+
+  .kvkk-body p { margin-bottom: 0.85rem; }
+  .kvkk-body p:last-child { margin-bottom: 0; }
+
+  .kvkk-body ul {
+    list-style: none;
+    margin-bottom: 0.85rem;
+  }
+
+  .kvkk-body li {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .kvkk-body li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--blue);
+  }
+
+  .kvkk-body a {
+    color: var(--blue);
+    text-decoration: none;
+    border-bottom: 1px solid var(--blue);
+  }
+
+  .kvkk-body strong { font-weight: 600; }
+
+  .kvkk-note {
+    max-width: 920px;
+    margin-top: 2rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px dashed var(--blue-ink);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--blue-ink);
+    opacity: 0.7;
+  }
+
   /* ============ FOOTER ============ */
   footer {
     background: var(--blue-ink);
@@ -1102,6 +1331,15 @@
     font-style: italic;
   }
 
+  .footer-bottom a {
+    color: var(--cream);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(244, 238, 223, 0.4);
+    transition: border-color 0.3s;
+  }
+
+  .footer-bottom a:hover { border-bottom-color: var(--cream); }
+
   /* ============ REVEAL ANIMATIONS ============ */
   .reveal {
     opacity: 0;
@@ -1138,9 +1376,10 @@
 
     section { padding: 4rem 1.25rem; }
 
+    .kvkk-body { padding-left: 0; }
+
     .section-head { flex-direction: column; align-items: flex-start; }
 
-    .about-grid,
     .schedule,
     .meeting,
     .form,
@@ -1148,7 +1387,15 @@
     .sponsor-card,
     .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
 
-    .about-stats { grid-template-columns: 1fr 1fr; }
+    .about-stats { grid-template-columns: 1fr; }
+    .stat { border-right: none; border-bottom: 1.5px solid var(--blue-ink); }
+    .about-stats .stat:last-child { border-bottom: none; }
+
+    .about-item {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .about-item:hover { padding-left: 0; }
 
     .sponsor-card { padding: 3rem 1.5rem; }
     .sponsor-card::before { left: 1rem; }
@@ -1250,33 +1497,54 @@
   <div class="container reveal">
     <div class="section-head">
       <span class="section-num">01 / HAKKIMIZDA</span>
-      <h2 class="section-title">İlk koşumuz<br><em>Silivri'den</em> başladı.</h2>
+      <h2 class="section-title">Koşu bir araç,<br><em>amacımız birlikte hareket etmek.</em></h2>
     </div>
 
-    <div class="about-grid">
-      <div class="about-text">
-        <p>Silivri sahili yıllardır koşucuları çağırıyordu — ama buluşulacak bir kulüp yoktu. Beeky, bu eksikliği gidermek için 2025'in sonunda kuruldu.</p>
-        <p>Bizim için koşmak; yarışmaktan önce, buluşmaktır. Pazar sabahları güneşle başlayan tempolar, Çarşamba akşamları serinlikte tamamlanan kilometreler ve sonunda Solde Cafe'de paylaşılan sohbetler.</p>
-        <p>Silivri'nin ilk koşu kulübü olarak buradayız: sporu, sosyalleşmeyle aynı yola çıkardık. İlk kilometrende de, yüzüncüde de aramıza katılabilirsin.</p>
-      </div>
+    <p class="about-lead">
+      Beeky Run Club olarak biz, Silivri'de koşuyu tek başına yapılan bir spor olmaktan çıkardık. 2025'in sonunda, sahilde buluşulacak bir kulüp yokken yola çıktık — ilçenin <strong>ilk koşu kulübü</strong> olarak. Bizim için koşu; nabız yükseltmenin ötesinde, bir araya gelmenin, yeni insanlar tanımanın ve Silivri sahilini birlikte paylaşmanın en güzel bahanesi.
+    </p>
 
-      <div class="about-stats">
-        <div class="stat">
-          <div class="num">2025</div>
-          <div class="label">Kuruluş</div>
+    <div class="about-divider"></div>
+
+    <h3 class="about-sub">Neler yapıyoruz?</h3>
+    <p class="about-sub-text">Haftanın iki günü, ajandamızın en keyifli saatlerini birlikte dolduruyoruz.</p>
+
+    <div class="about-items">
+      <div class="about-item">
+        <span class="item-num">01</span>
+        <div>
+          <h4>Çarşamba ve Pazar</h4>
+          <p>Koşularımız herkese açık ve tamamen ücretsiz. Çarşamba 21:00'de akşam serinliğinde, Pazar 09:00'da güneşle birlikte Solde Cafe'de buluşuyoruz. Profesyonel bir atlet olmana, hatta daha önce hiç koşmuş olmana bile gerek yok — tek ihtiyacın bir çift ayakkabı ve orada olma isteği.</p>
         </div>
-        <div class="stat">
-          <div class="num">2</div>
-          <div class="label">Haftalık Koşu</div>
+      </div>
+      <div class="about-item">
+        <span class="item-num">02</span>
+        <div>
+          <h4>Kendi temponla</h4>
+          <p>Silivri sahili boyunca koşuyoruz; bitiş çizgisi yok, yarış yok. Herkes kendi temposunda, kendi enerjisiyle ilerliyor. İster yürü, ister koş — önemli olan hızın değil, o gün orada bizimle olman. Ritim senin.</p>
         </div>
-        <div class="stat">
-          <div class="num">1.</div>
-          <div class="label">Silivri'nin</div>
+      </div>
+      <div class="about-item">
+        <span class="item-num">03</span>
+        <div>
+          <h4>Koşudan sonrası</h4>
+          <p>Koşumuzu tamamladıktan sonra dağılmıyoruz; Solde Cafe'de bir kahve eşliğinde oturup günü birlikte kapatıyoruz. Çünkü asıl amacımız kilometre saymak değil, samimiyeti büyüten bir topluluk kurmak.</p>
         </div>
-        <div class="stat">
-          <div class="num">0₺</div>
-          <div class="label">Üyelik Ücreti</div>
-        </div>
+      </div>
+    </div>
+
+    <div class="about-stats">
+      <div class="stat">
+        <div class="num">1.</div>
+        <div class="label">Silivri'nin İlk Kulübü</div>
+      </div>
+      <div class="stat">
+        <div class="num">2x</div>
+        <div class="label">Haftalık Koşu</div>
+      </div>
+      <div class="stat">
+        <div class="num">2025</div>
+        <div class="label">Kuruluş Yılı</div>
       </div>
     </div>
   </div>
@@ -1419,9 +1687,7 @@
       Üyelik tamamen ücretsiz. Bu formu doldurman bir taahhüt değil, sadece seni tanımamıza yardımcı oluyor. Bilgilerini aldıktan sonra WhatsApp grubuna eklenmen için seninle iletişime geçeceğiz.
     </p>
 
-    <!-- Form action: Formspree veya Web3Forms endpoint'i buraya gelecek -->
-    <form class="form" action="https://formspree.io/f/YOUR_REGISTRATION_FORM_ID" method="POST">
-      <input type="hidden" name="_subject" value="Yeni Üyelik Başvurusu — Beeky Run Club" />
+    <form class="form" id="kayitForm">
       <input type="hidden" name="form_type" value="Kayıt Formu" />
 
       <div class="field">
@@ -1466,9 +1732,9 @@
       <div class="field full">
         <label>Hangi koşulara katılmak istersin?</label>
         <div class="checks">
-          <label class="check"><input type="checkbox" name="katilim" value="Çarşamba 21:00" /> Çarşamba 21:00</label>
-          <label class="check"><input type="checkbox" name="katilim" value="Pazar 09:00" /> Pazar 09:00</label>
-          <label class="check"><input type="checkbox" name="katilim" value="İkisi de" /> İkisi de</label>
+          <label class="check"><input type="radio" name="katilim" value="Çarşamba 21:00" /> Çarşamba 21:00</label>
+          <label class="check"><input type="radio" name="katilim" value="Pazar 09:00" /> Pazar 09:00</label>
+          <label class="check"><input type="radio" name="katilim" value="İkisi de" checked /> İkisi de</label>
         </div>
       </div>
 
@@ -1490,6 +1756,7 @@
       </div>
 
       <button class="btn" type="submit">KAYIT OL →</button>
+      <div class="form-status" id="kayitStatus"></div>
     </form>
   </div>
 </section>
@@ -1526,8 +1793,7 @@
         </ul>
       </div>
 
-      <form class="form" action="https://formspree.io/f/YOUR_CONTACT_FORM_ID" method="POST">
-        <input type="hidden" name="_subject" value="Beeky Run Club — İletişim Formu" />
+      <form class="form" id="iletisimForm">
         <input type="hidden" name="form_type" value="İletişim" />
 
         <div class="field full">
@@ -1551,8 +1817,129 @@
         </div>
 
         <button class="btn" type="submit">GÖNDER →</button>
+        <div class="form-status" id="iletisimStatus"></div>
       </form>
     </div>
+  </div>
+</section>
+
+<!-- ============ KVKK ============ -->
+<section id="kvkk">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="section-num">09 / KVKK</span>
+      <h2 class="section-title">Aydınlatma <em>metni.</em></h2>
+    </div>
+
+    <p class="kvkk-intro">
+      6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") uyarınca, kişisel verilerinizin işlenmesine ilişkin olarak veri sorumlusu sıfatıyla Beeky Run Club ("Kulüp" veya "biz") tarafından sizi bilgilendirmek isteriz.
+    </p>
+    <p class="kvkk-date">Son güncelleme: Mayıs 2026</p>
+
+    <div class="kvkk-list">
+      <details class="kvkk-item">
+        <summary><span class="kvkk-num">01</span> Veri Sorumlusu <span class="toggle"></span></summary>
+        <div class="kvkk-body">
+          <p><strong>Unvan:</strong> Beeky Run Club</p>
+          <p><strong>İletişim:</strong> <a href="mailto:info@beekyrunclub.com">info@beekyrunclub.com</a></p>
+          <p><strong>Web sitesi:</strong> <a href="https://beekyrunclub.com">beekyrunclub.com</a></p>
+        </div>
+      </details>
+
+      <details class="kvkk-item">
+        <summary><span class="kvkk-num">02</span> İşlenen Kişisel Veriler <span class="toggle"></span></summary>
+        <div class="kvkk-body">
+          <ul>
+            <li><strong>Kimlik bilgileri:</strong> ad, soyad, yaş aralığı</li>
+            <li><strong>İletişim bilgileri:</strong> e-posta adresi, telefon numarası</li>
+            <li><strong>Katılım verileri:</strong> kayıt formu yanıtlarınız, tempo seviyeniz, katılmak istediğiniz koşular</li>
+            <li><strong>Görsel veriler:</strong> etkinlikler sırasında çekilen ve yayınına açık rıza verdiğiniz fotoğraflar</li>
+            <li><strong>İşlem güvenliği verileri:</strong> site sunucu kayıtları ve çerezler aracılığıyla toplanan teknik veriler</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="kvkk-item">
+        <summary><span class="kvkk-num">03</span> Kişisel Verilerin İşlenme Amaçları <span class="toggle"></span></summary>
+        <div class="kvkk-body">
+          <ul>
+            <li>Kulübe kayıt başvurularının alınması ve değerlendirilmesi</li>
+            <li>Koşu etkinliklerine katılımın planlanması ve yönetilmesi</li>
+            <li>Kulüp üyeleri ve ilgililerle iletişim kurulması</li>
+            <li>Etkinlik ve duyuruların paylaşılması</li>
+            <li>Açık rıza verildiğinde fotoğrafların kulüp tanıtımında kullanılması</li>
+            <li>Hukuki yükümlülüklerin yerine getirilmesi ve site güvenliğinin sağlanması</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="kvkk-item">
+        <summary><span class="kvkk-num">04</span> Toplama Yöntemi ve Hukuki Sebep <span class="toggle"></span></summary>
+        <div class="kvkk-body">
+          <p>Kişisel verileriniz, web sitesindeki kayıt ve iletişim formları aracılığıyla ilettiğiniz bilgiler ile site kullanımınız sırasında otomatik yollarla (çerezler, sunucu kayıtları) toplanır. İşleme hukuki sebepleri:</p>
+          <ul>
+            <li>Kulüp katılım ilişkisinin kurulması için <strong>meşru menfaat</strong> (KVKK m. 5/2-f)</li>
+            <li>Site güvenliği ve hukuki yükümlülükler için <strong>hukuki yükümlülük</strong> (KVKK m. 5/2-ç)</li>
+            <li>Tanıtım amaçlı fotoğraf yayını ve iletişim için <strong>açık rıza</strong> (KVKK m. 5/1)</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="kvkk-item">
+        <summary><span class="kvkk-num">05</span> Kişisel Verilerin Aktarımı <span class="toggle"></span></summary>
+        <div class="kvkk-body">
+          <p>Kişisel verileriniz, web sitesinin ve iletişim hizmetlerinin sunulabilmesi için aşağıdaki üçüncü taraf hizmet sağlayıcıların altyapısında işlenebilir:</p>
+          <ul>
+            <li><strong>Cloudflare, Inc. (ABD):</strong> web sitesi barındırma ve e-posta yönlendirme altyapısı</li>
+            <li><strong>Brevo / Sendinblue SAS (Fransa):</strong> e-posta iletişim altyapısı</li>
+          </ul>
+          <p>Yurt dışına veri aktarımı, ilgili hizmet sağlayıcıların bulunduğu ülkedeki veri koruma önlemleri ve KVKK'nın ilgili maddeleri çerçevesinde gerçekleştirilir.</p>
+        </div>
+      </details>
+
+      <details class="kvkk-item">
+        <summary><span class="kvkk-num">06</span> Saklama Süresi <span class="toggle"></span></summary>
+        <div class="kvkk-body">
+          <p>Kişisel verileriniz, kulüple olan katılım ilişkiniz süresince ve bu ilişki sona erdikten sonra yasal saklama yükümlülükleri veya meşru menfaat gerektirdiği sürece saklanır. Saklama süresi dolduğunda verileriniz silinir, yok edilir veya anonim hale getirilir.</p>
+        </div>
+      </details>
+
+      <details class="kvkk-item">
+        <summary><span class="kvkk-num">07</span> Haklarınız (KVKK Madde 11) <span class="toggle"></span></summary>
+        <div class="kvkk-body">
+          <p>Veri sahibi olarak aşağıdaki haklara sahipsiniz:</p>
+          <ul>
+            <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme</li>
+            <li>İşlenmişse buna ilişkin bilgi talep etme</li>
+            <li>İşlenme amacını ve amaca uygun kullanılıp kullanılmadığını öğrenme</li>
+            <li>Yurt içinde veya dışında aktarıldığı üçüncü kişileri bilme</li>
+            <li>Eksik veya yanlış işlenmişse düzeltilmesini isteme</li>
+            <li>Kanunun öngördüğü şartlarda silinmesini veya yok edilmesini isteme</li>
+            <li>Düzeltme, silme ve yok etme işlemlerinin aktarıldığı üçüncü kişilere bildirilmesini isteme</li>
+            <li>Otomatik sistemlerle analiz sonucu aleyhinize bir sonuç çıkmasına itiraz etme</li>
+            <li>Kanuna aykırı işleme sebebiyle zarara uğramanız halinde tazminat talep etme</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="kvkk-item">
+        <summary><span class="kvkk-num">08</span> Başvuru <span class="toggle"></span></summary>
+        <div class="kvkk-body">
+          <p>Haklarınızı kullanmak için <a href="mailto:info@beekyrunclub.com">info@beekyrunclub.com</a> adresine yazılı başvuruda bulunabilirsiniz. Başvurunuz en geç 30 gün içinde değerlendirilir ve sonuçlandırılır.</p>
+        </div>
+      </details>
+
+      <details class="kvkk-item">
+        <summary><span class="kvkk-num">09</span> Değişiklikler <span class="toggle"></span></summary>
+        <div class="kvkk-body">
+          <p>Bu aydınlatma metni zaman zaman güncellenebilir. Güncel sürüm daima bu sayfada yayınlanır.</p>
+        </div>
+      </details>
+    </div>
+
+    <p class="kvkk-note">
+      Not: Bu metin genel bir bilgilendirme amaçlıdır ve hukuki danışmanlık yerine geçmez. Kulübün veri işleme süreçleri değiştikçe bir hukuk uzmanına danışılarak güncellenmesi önerilir.
+    </p>
   </div>
 </section>
 
@@ -1596,6 +1983,7 @@
 
   <div class="footer-bottom">
     <span>© <span id="year">2026</span> Beeky Run Club · Silivri</span>
+    <span><a href="#kvkk">KVKK Aydınlatma Metni</a></span>
     <span class="tag">Be Beeky.</span>
   </div>
 </footer>
@@ -1647,6 +2035,60 @@
   document.querySelectorAll("#navLinks a").forEach(a => {
     a.addEventListener("click", () => document.getElementById("navLinks").classList.remove("open"));
   });
+
+  // ===== Form gönderimi — Google Apps Script'e =====
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXcrjk5g0BcFdSRzLolf0KUsEIFjc3ds4KQJO2TkeLerR0j7Q0I9_wxpyh_Ra36hyR3Q/exec";
+
+  function setupForm(formId, statusId, successMsg) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    const status = document.getElementById(statusId);
+    const btn = form.querySelector("button[type=submit]");
+    const btnText = btn.textContent;
+
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+
+      // basit doğrulama: zorunlu alanlar
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "GÖNDERİLİYOR...";
+      status.className = "form-status";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: new FormData(form)
+      })
+        .then(() => {
+          status.textContent = successMsg;
+          status.className = "form-status ok show";
+          form.reset();
+        })
+        .catch(() => {
+          status.textContent = "Bir sorun oluştu. Lütfen tekrar dene veya info@beekyrunclub.com adresine yaz.";
+          status.className = "form-status err show";
+        })
+        .finally(() => {
+          btn.disabled = false;
+          btn.textContent = btnText;
+        });
+    });
+  }
+
+  setupForm(
+    "kayitForm",
+    "kayitStatus",
+    "Başvurun bize ulaştı, aramıza hoş geldin! En kısa sürede WhatsApp grubuna eklenmen için seninle iletişime geçeceğiz. İyi ki Beeky."
+  );
+  setupForm(
+    "iletisimForm",
+    "iletisimStatus",
+    "Mesajın bize ulaştı. En kısa sürede dönüş yapacağız. Teşekkürler!"
+  );
 </script>
 
 </body>
