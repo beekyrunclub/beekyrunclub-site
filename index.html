@@ -732,7 +732,10 @@
   .photo:nth-child(4) { grid-column: span 4; }
   .photo:nth-child(5) { grid-column: span 3; }
   .photo:nth-child(6) { grid-column: span 3; }
-  .photo:nth-child(7) { grid-column: span 6; }
+  .photo:nth-child(7) { grid-column: span 6; grid-row: span 2; }
+
+  /* Solde Cafe banner'ı — kişilerin görüneceği şekilde konumlandır */
+  .photo:nth-child(7) img { object-position: center 38%; }
 
   /* dokunmatik cihazlarda hover yok — fotoğraflar net gösterilsin */
   @media (hover: none) {
@@ -1158,7 +1161,7 @@
     .photo:nth-child(1) { grid-column: span 2; grid-row: span 2; }
     .photo:nth-child(2) { grid-column: span 1; grid-row: span 2; }
     .photo:nth-child(4) { grid-column: span 2; }
-    .photo:nth-child(7) { grid-column: span 2; }
+    .photo:nth-child(7) { grid-column: span 2; grid-row: span 2; }
 
     .marquee-track { font-size: 1.4rem; gap: 2rem; }
     .marquee-track span { gap: 2rem; }
