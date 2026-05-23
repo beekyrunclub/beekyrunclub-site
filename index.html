@@ -268,6 +268,39 @@
     color: var(--blue);
   }
 
+  .hero-social {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s ease forwards;
+  }
+
+  .hero-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1.5px solid var(--blue-ink);
+    color: var(--blue-ink);
+    border-radius: 50%;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  }
+
+  .hero-social a:hover {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: var(--cream);
+    transform: translateY(-3px);
+  }
+
+  .hero-social svg {
+    width: 19px;
+    height: 19px;
+    fill: currentColor;
+  }
+
   .next-run {
     border: 1.5px solid var(--blue-ink);
     padding: 1.5rem;
@@ -648,60 +681,55 @@
     margin-bottom: 1.5rem;
   }
 
-  .map-placeholder {
-    aspect-ratio: 4 / 3;
-    background: var(--blue-deep);
-    border: 1.5px solid var(--blue-ink);
-    position: relative;
-    overflow: hidden;
+  .map-wrap {
     display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .map-frame {
+    aspect-ratio: 4 / 3;
+    border: 1.5px solid var(--blue-ink);
+    overflow: hidden;
+    position: relative;
+    background: var(--blue-deep);
+  }
+
+  .map-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    /* haritayı kulüp temasına hafifçe uydur */
+    filter: grayscale(18%) contrast(1.02);
+  }
+
+  .map-directions {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .map-placeholder::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(244, 238, 223, 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(244, 238, 223, 0.08) 1px, transparent 1px);
-    background-size: 30px 30px;
-  }
-
-  .map-placeholder .pin {
-    position: relative;
-    z-index: 2;
-    text-align: center;
+    gap: 0.6rem;
+    padding: 1rem 1.5rem;
+    background: var(--blue-ink);
     color: var(--cream);
-  }
-
-  .map-placeholder .pin-dot {
-    width: 18px;
-    height: 18px;
-    background: var(--cream);
-    border-radius: 50%;
-    margin: 0 auto 1rem;
-    position: relative;
-    animation: pinPulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pinPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(244, 238, 223, 0.6); }
-    50% { box-shadow: 0 0 0 20px rgba(244, 238, 223, 0); }
-  }
-
-  .map-placeholder .pin-label {
+    text-decoration: none;
     font-family: var(--display);
     font-weight: 700;
-    font-size: 1.4rem;
-    letter-spacing: 0.05em;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    border: 1.5px solid var(--blue-ink);
+    transition: background 0.3s ease, color 0.3s ease;
   }
 
-  .map-placeholder .pin-sub {
-    font-size: 0.85rem;
-    opacity: 0.7;
-    margin-top: 0.25rem;
+  .map-directions:hover {
+    background: transparent;
+    color: var(--blue-ink);
+  }
+
+  .map-directions svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
   }
 
   /* ============ CALENDAR ============ */
@@ -1514,11 +1542,25 @@
   </div>
 
   <div class="hero-bottom">
-    <p class="hero-intro">
-      Silivri sahilinde haftanın iki günü buluşan koşu kulübü.
-      Çarşamba akşamı serinliğinde, Pazar sabahı güneşinde.
-      <strong>Tempon kendi temponken, hızın bizimle bulur.</strong>
-    </p>
+    <div>
+      <p class="hero-intro">
+        Silivri sahilinde haftanın iki günü buluşan koşu kulübü.
+        Çarşamba akşamı serinliğinde, Pazar sabahı güneşinde.
+        <strong>Tempon kendi temponken, hızın bizimle bulur.</strong>
+      </p>
+
+      <div class="hero-social">
+        <a href="https://instagram.com/beekyrunclub" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.95c-3.14 0-3.51.01-4.75.07-1.15.05-1.77.24-2.18.4-.55.22-.94.47-1.35.88-.41.41-.66.8-.88 1.35-.16.41-.35 1.03-.4 2.18-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05 1.15.24 1.77.4 2.18.22.55.47.94.88 1.35.41.41.8.66 1.35.88.41.16 1.03.35 2.18.4 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c1.15-.05 1.77-.24 2.18-.4.55-.22.94-.47 1.35-.88.41-.41.66-.8.88-1.35.16-.41.35-1.03.4-2.18.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-1.15-.24-1.77-.4-2.18a3.6 3.6 0 0 0-.88-1.35 3.6 3.6 0 0 0-1.35-.88c-.41-.16-1.03-.35-2.18-.4-1.24-.06-1.61-.07-4.75-.07zm0 3.32a4.57 4.57 0 1 1 0 9.14 4.57 4.57 0 0 1 0-9.14zm0 7.54a2.97 2.97 0 1 0 0-5.94 2.97 2.97 0 0 0 0 5.94zm5.82-7.74a1.07 1.07 0 1 1-2.14 0 1.07 1.07 0 0 1 2.14 0z"/></svg>
+        </a>
+        <a href="https://whatsapp.com/channel/0029VbCdUhrHbFV1BAT3n02v" target="_blank" rel="noopener" aria-label="WhatsApp Kanalı">
+          <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.87 9.87 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.25 8.24a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24zm-4.5 4.43c-.21 0-.55.08-.84.39-.29.31-1.1 1.08-1.1 2.63 0 1.55 1.13 3.05 1.29 3.26.16.21 2.22 3.39 5.46 4.75.76.33 1.36.53 1.82.68.76.24 1.46.21 2.01.13.61-.09 1.88-.77 2.15-1.51.27-.74.27-1.38.19-1.51-.08-.13-.29-.21-.61-.37-.32-.16-1.88-.93-2.17-1.03-.29-.11-.5-.16-.71.16-.21.31-.81 1.03-1 1.24-.18.21-.37.24-.68.08-.32-.16-1.34-.49-2.55-1.57-.94-.84-1.58-1.88-1.76-2.19-.18-.32-.02-.49.14-.65.14-.14.32-.37.47-.55.16-.18.21-.31.32-.52.11-.21.05-.39-.03-.55-.08-.16-.71-1.72-.98-2.35-.26-.62-.52-.54-.71-.55-.18-.01-.39-.01-.6-.01z"/></svg>
+        </a>
+        <a href="https://strava.app.link/mPQVBzrta2b" target="_blank" rel="noopener" aria-label="Strava">
+          <svg viewBox="0 0 24 24"><path d="M15.39 18.62 13.06 14h-3.4l5.73 11.32L21.12 14h-3.4l-2.33 4.62zM10.5 0 4.13 12.62h3.83L10.5 7.56l2.54 5.06h3.82L10.5 0z"/></svg>
+        </a>
+      </div>
+    </div>
 
     <div class="next-run">
       <div class="label">Bir Sonraki Koşu</div>
@@ -1658,12 +1700,21 @@
         <p>Sahile sıfır konumu, geniş terası ve sıcak ekibiyle yalnızca bir buluşma noktası değil, aynı zamanda <strong>ana sponsorumuz.</strong></p>
       </div>
 
-      <div class="map-placeholder">
-        <div class="pin">
-          <div class="pin-dot"></div>
-          <div class="pin-label">SOLDE CAFE</div>
-          <div class="pin-sub">Silivri Sahil — Harita yakında</div>
+      <div class="map-wrap">
+        <div class="map-frame">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3007.6716585442177!2d28.238444776595507!3d41.076169271341165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14b5171d59d4cc67%3A0x952d3068f2863be1!2sSolde%20Coffee!5e0!3m2!1str!2str!4v1779568006531!5m2!1str!2str"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Solde Cafe — Silivri konumu"></iframe>
         </div>
+        <a class="map-directions"
+           href="https://www.google.com/maps/place/Solde+Coffee/@41.0761693,28.2384448,17z/data=!3m1!4b1!4m6!3m5!1s0x14b5171d59d4cc67:0x952d3068f2863be1!8m2!3d41.0761693!4d28.2410197!16s%2Fg%2F11s7sw8scf"
+           target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M21.71 11.29 12.71 2.29a1 1 0 0 0-1.42 0l-9 9a1 1 0 0 0 0 1.42l9 9a1 1 0 0 0 1.42 0l9-9a1 1 0 0 0 0-1.42zM14 14.5V12h-4v3H8v-4a1 1 0 0 1 1-1h5V7.5l3.5 3.5z"/></svg>
+          YOL TARİFİ AL
+        </a>
       </div>
     </div>
   </div>
@@ -1849,8 +1900,12 @@
             <div class="val"><a href="https://instagram.com/beekyrunclub" target="_blank" rel="noopener">@beekyrunclub</a></div>
           </li>
           <li>
-            <div class="key">WhatsApp & Strava</div>
-            <div class="val">Yakında bağlanacak</div>
+            <div class="key">WhatsApp Kanalı</div>
+            <div class="val"><a href="https://whatsapp.com/channel/0029VbCdUhrHbFV1BAT3n02v" target="_blank" rel="noopener">Duyuru kanalımıza katıl</a></div>
+          </li>
+          <li>
+            <div class="key">Strava</div>
+            <div class="val"><a href="https://strava.app.link/mPQVBzrta2b" target="_blank" rel="noopener">Strava kulübümüz</a></div>
           </li>
         </ul>
       </div>
@@ -1915,6 +1970,7 @@
             <li><strong>Kimlik bilgileri:</strong> ad, soyad, yaş aralığı</li>
             <li><strong>İletişim bilgileri:</strong> e-posta adresi, telefon numarası</li>
             <li><strong>Katılım verileri:</strong> kayıt formu yanıtlarınız, tempo seviyeniz, katılmak istediğiniz koşular</li>
+            <li><strong>Pazarlama tercihleri:</strong> e-posta ile duyuru almak isteyip istemediğinize ilişkin tercihiniz</li>
             <li><strong>Görsel veriler:</strong> etkinlikler sırasında çekilen ve yayınına açık rıza verdiğiniz fotoğraflar</li>
             <li><strong>İşlem güvenliği verileri:</strong> site sunucu kayıtları ve çerezler aracılığıyla toplanan teknik veriler</li>
           </ul>
@@ -1929,6 +1985,7 @@
             <li>Koşu etkinliklerine katılımın planlanması ve yönetilmesi</li>
             <li>Kulüp üyeleri ve ilgililerle iletişim kurulması</li>
             <li>Etkinlik ve duyuruların paylaşılması</li>
+            <li>Açık rıza vermeniz halinde e-posta ile koşu duyurusu ve etkinlik haberleri iletilmesi</li>
             <li>Açık rıza verildiğinde fotoğrafların kulüp tanıtımında kullanılması</li>
             <li>Hukuki yükümlülüklerin yerine getirilmesi ve site güvenliğinin sağlanması</li>
           </ul>
@@ -1953,6 +2010,7 @@
           <p>Kişisel verileriniz, web sitesinin ve iletişim hizmetlerinin sunulabilmesi için aşağıdaki üçüncü taraf hizmet sağlayıcıların altyapısında işlenebilir:</p>
           <ul>
             <li><strong>Cloudflare, Inc. (ABD):</strong> web sitesi barındırma ve e-posta yönlendirme altyapısı</li>
+            <li><strong>Google LLC (ABD):</strong> kayıt ve iletişim formları aracılığıyla ilettiğiniz verilerin saklanması ve işlenmesi (Google Sheets ve Google Apps Script altyapısı)</li>
             <li><strong>Brevo / Sendinblue SAS (Fransa):</strong> e-posta iletişim altyapısı</li>
           </ul>
           <p>Yurt dışına veri aktarımı, ilgili hizmet sağlayıcıların bulunduğu ülkedeki veri koruma önlemleri ve KVKK'nın ilgili maddeleri çerçevesinde gerçekleştirilir.</p>
@@ -2037,8 +2095,8 @@
       <h5>Sosyal</h5>
       <ul>
         <li><a href="https://instagram.com/beekyrunclub" target="_blank" rel="noopener">Instagram</a></li>
-        <li><a href="#">Strava</a></li>
-        <li><a href="#">WhatsApp</a></li>
+        <li><a href="https://strava.app.link/mPQVBzrta2b" target="_blank" rel="noopener">Strava</a></li>
+        <li><a href="https://whatsapp.com/channel/0029VbCdUhrHbFV1BAT3n02v" target="_blank" rel="noopener">WhatsApp</a></li>
       </ul>
     </div>
   </div>
