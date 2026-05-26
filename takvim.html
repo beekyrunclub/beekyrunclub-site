@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Yarış Takvimi — Beeky Run Club</title>
+<meta name="description" content="Beeky Run Club ile birlikte katılacağımız yarışlar ve özel etkinlikler." />
+<link rel="icon" type="image/jpeg" href="logo.jpeg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav>
+  <a href="index.html" class="logo-mark">
+    <img src="logo.jpeg" alt="Beeky Run Club logo" />
+    <span>BEEKY</span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html#hakkimizda">Hakkımızda</a></li>
+    <li><a href="antrenmanlar.html">Antrenmanlar</a></li>
+    <li><a href="bulusma.html">Buluşma</a></li>
+    <li><a href="takvim.html" class="active">Takvim</a></li>
+    <li><a href="galeri.html">Galeri</a></li>
+    <li><a href="sponsorlar.html">Sponsor</a></li>
+    <li><a href="index.html#kayit">Kayıt</a></li>
+    <li><a href="index.html#iletisim">İletişim</a></li>
+  </ul>
+  <button class="mobile-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ============ RACE CALENDAR ============ -->
+<section id="takvim" class="subpage-section">
+  <div class="container reveal">
+    <a class="back-link" href="index.html">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg>
+      Ana Sayfa
+    </a>
+
+    <div class="section-head">
+      <span class="section-num">04 / YARIŞ TAKVİMİ</span>
+      <h2 class="section-title">Sırada <em>ne var?</em></h2>
+    </div>
+
+    <div class="calendar-empty">
+      <div class="icon">→</div>
+      <h3>Yakında Burada</h3>
+      <p>Birlikte katılacağımız yarışları ve özel etkinlikleri buradan duyuracağız. Şimdilik en güncel bilgi için Instagram ve WhatsApp grubumuzu takip edebilirsin.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="logo.jpeg" alt="Beeky Run Club" />
+      <h4>BEEKY RUN CLUB</h4>
+      <p>İyi ki Beeky.</p>
+    </div>
+
+    <div class="footer-col">
+      <h5>Keşfet</h5>
+      <ul>
+        <li><a href="index.html#hakkimizda">Hakkımızda</a></li>
+        <li><a href="antrenmanlar.html">Antrenmanlar</a></li>
+        <li><a href="bulusma.html">Buluşma</a></li>
+        <li><a href="takvim.html">Takvim</a></li>
+        <li><a href="galeri.html">Galeri</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h5>Katıl</h5>
+      <ul>
+        <li><a href="index.html#kayit">Kayıt Ol</a></li>
+        <li><a href="index.html#iletisim">İletişim</a></li>
+        <li><a href="sponsorlar.html">Sponsorlar</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h5>Sosyal</h5>
+      <ul>
+        <li><a href="https://instagram.com/beekyrunclub" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="https://strava.app.link/mPQVBzrta2b" target="_blank" rel="noopener">Strava</a></li>
+        <li><a href="https://whatsapp.com/channel/0029VbCdUhrHbFV1BAT3n02v" target="_blank" rel="noopener">WhatsApp</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© <span id="year">2026</span> Beeky Run Club · Silivri</span>
+    <span><a href="index.html#kvkk">KVKK Aydınlatma Metni</a></span>
+    <span class="tag">Be Beeky.</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
