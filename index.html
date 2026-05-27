@@ -234,7 +234,7 @@
   </div>
 </section>
 
-<!-- ============ REGISTRATION ============ -->
+<!-- ============ REGISTRATION (CTA) ============ -->
 <section id="kayit">
   <div class="container reveal">
     <div class="section-head">
@@ -242,92 +242,35 @@
       <h2 class="section-title">Aramıza <em>katıl.</em></h2>
     </div>
 
-    <p class="form-intro">
-      Üyelik tamamen ücretsiz. Bu formu doldurman bir taahhüt değil, sadece seni tanımamıza yardımcı oluyor. Bilgilerini aldıktan sonra WhatsApp grubuna eklenmen için seninle iletişime geçeceğiz.
-    </p>
-
-    <form class="form" id="kayitForm">
-      <input type="hidden" name="form_type" value="Kayıt Formu" />
-
-      <div class="field">
-        <label for="ad">Ad Soyad *</label>
-        <input id="ad" name="ad_soyad" type="text" required placeholder="Adın ve soyadın" />
+    <div class="join-cta">
+      <div class="join-cta-main">
+        <p class="join-cta-lead">
+          Üyelik tamamen ücretsiz ve taahhütsüz. Birkaç kısa adımda seni tanıyalım —
+          gerisini birlikte koşarken hallederiz.
+        </p>
+        <ul class="join-cta-points">
+          <li>Tüm seviyelere açık, ücretsiz</li>
+          <li>Haftanın iki günü koşu</li>
+          <li>Yalnızca 3 kısa adım</li>
+        </ul>
+        <button class="btn join-open" type="button" id="kayitAc">KAYIT OL →</button>
       </div>
 
-      <div class="field">
-        <label for="email">E-posta *</label>
-        <input id="email" name="email" type="email" required placeholder="ornek@mail.com" />
-      </div>
-
-      <div class="field">
-        <label for="tel">Telefon *</label>
-        <input id="tel" name="telefon" type="tel" required placeholder="05XX XXX XX XX" />
-      </div>
-
-      <div class="field">
-        <label for="yas">Yaş Aralığı</label>
-        <select id="yas" name="yas_araligi">
-          <option value="">Seçiniz</option>
-          <option>18-25</option>
-          <option>26-35</option>
-          <option>36-45</option>
-          <option>46-55</option>
-          <option>55+</option>
-        </select>
-      </div>
-
-      <div class="field full">
-        <label>Tempo Seviyesi</label>
-        <select name="tempo_seviyesi">
-          <option value="">Hangi tempoda koşuyorsun?</option>
-          <option>İlk kez koşacağım</option>
-          <option>Rahat tempo — 6:00+ dk/km</option>
-          <option>Orta tempo — 5:00-6:00 dk/km</option>
-          <option>Hızlı tempo — 4:00-5:00 dk/km</option>
-          <option>Yarış temposu — 4:00 dk/km altı</option>
-        </select>
-      </div>
-
-      <div class="field full">
-        <label>Hangi koşulara katılmak istersin?</label>
-        <div class="checks">
-          <label class="check"><input type="radio" name="katilim" value="Çarşamba 21:00" /> Çarşamba 21:00</label>
-          <label class="check"><input type="radio" name="katilim" value="Pazar 09:00" /> Pazar 09:00</label>
-          <label class="check"><input type="radio" name="katilim" value="İkisi de" checked /> İkisi de</label>
+      <div class="join-cta-steps" aria-hidden="true">
+        <div class="join-step">
+          <span class="join-step-num">01</span>
+          <span class="join-step-label">Seni tanıyalım</span>
+        </div>
+        <div class="join-step">
+          <span class="join-step-num">02</span>
+          <span class="join-step-label">Koşu tercihlerin</span>
+        </div>
+        <div class="join-step">
+          <span class="join-step-num">03</span>
+          <span class="join-step-label">Onay &amp; gönder</span>
         </div>
       </div>
-
-      <div class="field full">
-        <label for="duy">Bizi nereden duydun?</label>
-        <select id="duy" name="kanal">
-          <option value="">Seçiniz</option>
-          <option>Instagram</option>
-          <option>Arkadaş tavsiyesi</option>
-          <option>Solde Cafe</option>
-          <option>Sahilde gördüm</option>
-          <option>Diğer</option>
-        </select>
-      </div>
-
-      <div class="field full">
-        <label for="not">Eklemek istediğin bir şey var mı?</label>
-        <textarea id="not" name="notlar" placeholder="Sağlık durumu, koşu geçmişi veya merak ettiklerin..."></textarea>
-      </div>
-
-      <div class="consents">
-        <label class="consent">
-          <input type="checkbox" name="kvkk_onay" value="Onaylandı" required />
-          <span><a href="kvkk.html">KVKK Aydınlatma Metni</a>'ni okudum, kişisel verilerimin belirtilen kapsamda işlenmesini kabul ediyorum. <span class="req">(zorunlu)</span></span>
-        </label>
-        <label class="consent">
-          <input type="checkbox" name="bulten_izni" value="Evet" checked />
-          <span>Koşu duyuruları ve etkinlik haberlerini e-posta ile almak istiyorum. <span class="req">(isteğe bağlı)</span></span>
-        </label>
-      </div>
-
-      <button class="btn" type="submit">KAYIT OL →</button>
-      <div class="form-status" id="kayitStatus"></div>
-    </form>
+    </div>
   </div>
 </section>
 
@@ -448,6 +391,128 @@
     <span class="tag">Be Beeky.</span>
   </div>
 </footer>
+
+<!-- ============ KAYIT MODAL ============ -->
+<div class="modal-overlay" id="kayitModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="kayitModalTitle">
+    <button class="modal-close" type="button" data-close-modal aria-label="Kapat">&times;</button>
+
+    <div class="modal-head">
+      <span class="modal-kicker">KAYIT OL</span>
+      <h3 id="kayitModalTitle">Aramıza katıl</h3>
+      <div class="wizard-progress">
+        <div class="wizard-bar"><span id="wizardBar"></span></div>
+        <span class="wizard-count">Adım <span id="wizardStep">1</span>/3</span>
+      </div>
+    </div>
+
+    <form class="wizard-form" id="kayitForm" novalidate>
+      <input type="hidden" name="form_type" value="Kayıt Formu" />
+
+      <!-- ADIM 1 -->
+      <div class="wizard-step" data-step="1">
+        <h4 class="wizard-step-head">Seni tanıyalım</h4>
+        <div class="wizard-fields">
+          <div class="field">
+            <label for="ad">Ad Soyad *</label>
+            <input id="ad" name="ad_soyad" type="text" required placeholder="Adın ve soyadın" />
+          </div>
+          <div class="field">
+            <label for="email">E-posta *</label>
+            <input id="email" name="email" type="email" required placeholder="ornek@mail.com" />
+          </div>
+          <div class="field">
+            <label for="tel">Telefon *</label>
+            <input id="tel" name="telefon" type="tel" required placeholder="05XX XXX XX XX" />
+          </div>
+          <div class="field">
+            <label for="yas">Yaş Aralığı</label>
+            <select id="yas" name="yas_araligi">
+              <option value="">Seçiniz</option>
+              <option>18-25</option>
+              <option>26-35</option>
+              <option>36-45</option>
+              <option>46-55</option>
+              <option>55+</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADIM 2 -->
+      <div class="wizard-step" data-step="2" hidden>
+        <h4 class="wizard-step-head">Koşu tercihlerin</h4>
+        <div class="wizard-fields">
+          <div class="field full">
+            <label for="tempo">Tempo Seviyesi</label>
+            <select id="tempo" name="tempo_seviyesi">
+              <option value="">Hangi tempoda koşuyorsun?</option>
+              <option>İlk kez koşacağım</option>
+              <option>Rahat tempo — 6:00+ dk/km</option>
+              <option>Orta tempo — 5:00-6:00 dk/km</option>
+              <option>Hızlı tempo — 4:00-5:00 dk/km</option>
+              <option>Yarış temposu — 4:00 dk/km altı</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>Hangi koşulara katılmak istersin?</label>
+            <div class="checks">
+              <label class="check"><input type="radio" name="katilim" value="Çarşamba 21:00" /> Çarşamba 21:00</label>
+              <label class="check"><input type="radio" name="katilim" value="Pazar 09:00" /> Pazar 09:00</label>
+              <label class="check"><input type="radio" name="katilim" value="İkisi de" checked /> İkisi de</label>
+            </div>
+          </div>
+          <div class="field full">
+            <label for="duy">Bizi nereden duydun?</label>
+            <select id="duy" name="kanal">
+              <option value="">Seçiniz</option>
+              <option>Instagram</option>
+              <option>Arkadaş tavsiyesi</option>
+              <option>Solde Cafe</option>
+              <option>Sahilde gördüm</option>
+              <option>Diğer</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="not">Eklemek istediğin bir şey var mı?</label>
+            <textarea id="not" name="notlar" placeholder="Sağlık durumu, koşu geçmişi veya merak ettiklerin..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADIM 3 -->
+      <div class="wizard-step" data-step="3" hidden>
+        <h4 class="wizard-step-head">Onay &amp; gönder</h4>
+        <div class="consents">
+          <label class="consent">
+            <input type="checkbox" name="kvkk_onay" value="Onaylandı" required />
+            <span><a href="kvkk.html" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>'ni okudum, kişisel verilerimin belirtilen kapsamda işlenmesini kabul ediyorum. <span class="req">(zorunlu)</span></span>
+          </label>
+          <label class="consent">
+            <input type="checkbox" name="bulten_izni" value="Evet" checked />
+            <span>Koşu duyuruları ve etkinlik haberlerini e-posta ile almak istiyorum. <span class="req">(isteğe bağlı)</span></span>
+          </label>
+        </div>
+        <p class="wizard-final-note">Gönder'e bastığında bilgilerin bize ulaşır; WhatsApp grubuna eklenmen için en kısa sürede sana döneriz.</p>
+      </div>
+
+      <div class="form-status" id="kayitStatus"></div>
+
+      <div class="wizard-nav">
+        <button type="button" class="btn-ghost" id="wizardGeri">← Geri</button>
+        <button type="button" class="btn" id="wizardIleri">İleri →</button>
+        <button type="submit" class="btn" id="wizardGonder" hidden>KAYIT OL →</button>
+      </div>
+    </form>
+
+    <div class="wizard-success" id="kayitSuccess" hidden>
+      <div class="wizard-success-icon">✓</div>
+      <h4>Aramıza hoş geldin!</h4>
+      <p id="kayitSuccessMsg"></p>
+      <button type="button" class="btn" data-close-modal>KAPAT</button>
+    </div>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>
