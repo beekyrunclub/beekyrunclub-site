@@ -3,26 +3,23 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Giriş Yap — Beeky Run Club</title>
-<meta name="description" content="Beeky Run Club üye girişi." />
+<title>Yeni Şifre — Beeky Run Club</title>
+<meta name="description" content="Beeky Run Club yeni şifre belirleme." />
 <link rel="icon" type="image/jpeg" href="logo.jpeg" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css" />
 <style>
-  .auth-wrap{
-    min-height:70vh; display:flex; align-items:center; justify-content:center;
-    padding:48px 20px;
+  .auth-wrap {
+    min-height: 70vh; display: flex; align-items: center; justify-content: center;
+    padding: 48px 20px;
   }
-  .auth-card{
-    width:100%; max-width:420px;
-  }
-  .auth-card .section-head{ margin-bottom:24px; }
-  .auth-alt {
-    margin-top: 18px; font-size: 14px; opacity: .85;
-  }
+  .auth-card { width: 100%; max-width: 420px; }
+  .auth-card .section-head { margin-bottom: 24px; }
+  .auth-alt { margin-top: 18px; font-size: 14px; opacity: .85; }
   .auth-alt a { font-weight: 600; text-decoration: underline; }
+  #resetWaiting { text-align: center; padding: 2rem 0; opacity: 0.7; font-size: 0.95rem; }
 
   /* Form alanları açık zemin için */
   .auth-card .field label { color: var(--blue-ink); opacity: 0.85; }
@@ -80,33 +77,36 @@
   </button>
 </nav>
 
-<!-- ============ GİRİŞ ============ -->
-<main class="auth-wrap">
+<!-- ============ YENİ ŞİFRE ============ -->
+<main class="auth-wrap" id="sifreSifirlaPage">
   <div class="auth-card">
-    <div class="section-head">
-      <span class="section-num">ÜYE GİRİŞİ</span>
-      <h2 class="section-title">Tekrar <em>hoş geldin.</em></h2>
+
+    <!-- Oturum doğrulanırken gösterilir -->
+    <div id="resetWaiting">Oturum doğrulanıyor...</div>
+
+    <!-- Doğrulama başarılıysa form gösterilir -->
+    <div id="resetFormWrap" hidden>
+      <div class="section-head">
+        <span class="section-num">YENİ ŞİFRE</span>
+        <h2 class="section-title">Şifreni <em>güncelle.</em></h2>
+      </div>
+
+      <form class="form" id="passwordResetForm" novalidate>
+        <div class="field full">
+          <label for="newPass">Yeni Şifre</label>
+          <input id="newPass" name="password" type="password" required minlength="6"
+            placeholder="En az 6 karakter" autocomplete="new-password" />
+        </div>
+        <div class="field full">
+          <label for="newPassConfirm">Şifre Tekrar</label>
+          <input id="newPassConfirm" name="password_confirm" type="password" required minlength="6"
+            placeholder="Şifreni tekrar gir" autocomplete="new-password" />
+        </div>
+        <button class="btn" type="submit">ŞİFREYİ GÜNCELLE →</button>
+        <div class="form-status" id="resetStatus"></div>
+      </form>
     </div>
 
-    <form class="form" id="loginForm" novalidate>
-      <div class="field full">
-        <label for="liMail">E-posta</label>
-        <input id="liMail" name="email" type="email" required placeholder="ornek@mail.com" autocomplete="email" />
-      </div>
-      <div class="field full">
-        <label for="liPass">Şifre</label>
-        <input id="liPass" name="password" type="password" required placeholder="••••••" autocomplete="current-password" />
-      </div>
-      <button class="btn" type="submit">GİRİŞ YAP →</button>
-      <div class="form-status" id="loginStatus"></div>
-    </form>
-
-    <p class="auth-alt">
-      Henüz hesabın yok mu? <a href="index.html#kayit">Aramıza katıl →</a>
-    </p>
-    <p class="auth-alt" style="margin-top:8px;">
-      <a href="sifremi-unuttum.html">Şifremi unuttum</a>
-    </p>
   </div>
 </main>
 

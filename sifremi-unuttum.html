@@ -3,25 +3,21 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Giriş Yap — Beeky Run Club</title>
-<meta name="description" content="Beeky Run Club üye girişi." />
+<title>Şifremi Unuttum — Beeky Run Club</title>
+<meta name="description" content="Beeky Run Club şifre sıfırlama." />
 <link rel="icon" type="image/jpeg" href="logo.jpeg" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css" />
 <style>
-  .auth-wrap{
-    min-height:70vh; display:flex; align-items:center; justify-content:center;
-    padding:48px 20px;
+  .auth-wrap {
+    min-height: 70vh; display: flex; align-items: center; justify-content: center;
+    padding: 48px 20px;
   }
-  .auth-card{
-    width:100%; max-width:420px;
-  }
-  .auth-card .section-head{ margin-bottom:24px; }
-  .auth-alt {
-    margin-top: 18px; font-size: 14px; opacity: .85;
-  }
+  .auth-card { width: 100%; max-width: 420px; }
+  .auth-card .section-head { margin-bottom: 24px; }
+  .auth-alt { margin-top: 18px; font-size: 14px; opacity: .85; }
   .auth-alt a { font-weight: 600; text-decoration: underline; }
 
   /* Form alanları açık zemin için */
@@ -80,32 +76,29 @@
   </button>
 </nav>
 
-<!-- ============ GİRİŞ ============ -->
+<!-- ============ ŞİFREMİ UNUTTUM ============ -->
 <main class="auth-wrap">
   <div class="auth-card">
     <div class="section-head">
-      <span class="section-num">ÜYE GİRİŞİ</span>
-      <h2 class="section-title">Tekrar <em>hoş geldin.</em></h2>
+      <span class="section-num">ŞİFRE SIFIRLAMA</span>
+      <h2 class="section-title">Şifreni <em>sıfırla.</em></h2>
     </div>
 
-    <form class="form" id="loginForm" novalidate>
+    <p style="font-size:1rem; line-height:1.6; margin-bottom:1.75rem; opacity:0.8;">
+      Kayıtlı e-posta adresini gir. Şifre sıfırlama bağlantısı gönderelim.
+    </p>
+
+    <form class="form" id="forgotForm" novalidate>
       <div class="field full">
-        <label for="liMail">E-posta</label>
-        <input id="liMail" name="email" type="email" required placeholder="ornek@mail.com" autocomplete="email" />
+        <label for="forgotMail">E-posta</label>
+        <input id="forgotMail" name="email" type="email" required placeholder="ornek@mail.com" autocomplete="email" />
       </div>
-      <div class="field full">
-        <label for="liPass">Şifre</label>
-        <input id="liPass" name="password" type="password" required placeholder="••••••" autocomplete="current-password" />
-      </div>
-      <button class="btn" type="submit">GİRİŞ YAP →</button>
-      <div class="form-status" id="loginStatus"></div>
+      <button class="btn" type="submit">BAĞLANTI GÖNDER →</button>
+      <div class="form-status" id="forgotStatus"></div>
     </form>
 
     <p class="auth-alt">
-      Henüz hesabın yok mu? <a href="index.html#kayit">Aramıza katıl →</a>
-    </p>
-    <p class="auth-alt" style="margin-top:8px;">
-      <a href="sifremi-unuttum.html">Şifremi unuttum</a>
+      <a href="giris.html">← Giriş sayfasına dön</a>
     </p>
   </div>
 </main>
