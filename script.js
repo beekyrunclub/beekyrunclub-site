@@ -130,16 +130,12 @@ if (sb) {
       if (raw) {
         try {
           const profileData = JSON.parse(raw);
-          const { data: existing } = await sb
-            .from("profiles")
-            .select("id")
-            .eq("id", session.user.id)
-            .single();
-          if (!existing) {
-            await sb.from("profiles").insert({ id: session.user.id, ...profileData });
-          }
+          const { error } = await sb.from("profiles").upsert(
+            { id: session.user.id, ...profileData },
+            { onConflict: "id" }
+          );
+          if (!error) localStorage.removeItem("beeky_pending_profile");
         } catch (_e) { /* sessizce geç */ }
-        localStorage.removeItem("beeky_pending_profile");
       }
       updateAuthUI();
     } else if (event === "PASSWORD_RECOVERY") {
@@ -342,8 +338,21 @@ setupForm(
       sendBtn.textContent = "KAYIT OL →";
     }
 
-    // 1) Auth hesabı oluştur
-    const { data, error } = await sb.auth.signUp({ email, password });
+    // 1) Auth hesabı oluştur — profil verisi metadata olarak gönderilir, trigger ile profiles'a yazılır
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          ad_soyad:        ad,
+          telefon:         tel || null,
+          yas_araligi:     yas || null,
+          tempo_seviyesi:  tempo || null,
+          katilim_tercihi: katilim || null,
+          bulten_izni:     bulten
+        }
+      }
+    });
     if (error) {
       resetBtns();
       status.textContent = /already|registered/i.test(error.message)
@@ -719,6 +728,70 @@ setupForm(
 
     if (apCancelBtn) apCancelBtn.addEventListener("click", apResetForm);
 
+    // Katılımcılar modal
+    function apCloseParticipants() {
+      const modal = document.getElementById("apParticipantsModal");
+      if (modal) modal.classList.remove("is-open");
+      document.body.style.overflow = "";
+    }
+
+    async function apShowParticipants(raceId, raceName) {
+      const modal   = document.getElementById("apParticipantsModal");
+      const titleEl = document.getElementById("apParticipantsTitle");
+      const countEl = document.getElementById("apParticipantsCount");
+      const bodyEl  = document.getElementById("apParticipantsBody");
+      if (!modal || !titleEl || !countEl || !bodyEl) return;
+
+      titleEl.textContent = raceName;
+      countEl.textContent = "Yükleniyor...";
+      bodyEl.innerHTML = "";
+      modal.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+
+      const { data, error } = await sb.rpc("get_race_participants", { race_id_input: raceId });
+
+      if (error) {
+        countEl.textContent = "";
+        bodyEl.innerHTML = `<p style="color:#bf3b3b;">Yüklenemedi: ${error.message}</p>`;
+        return;
+      }
+
+      const entries = data || [];
+
+      if (entries.length === 0) {
+        countEl.textContent = "0 katılımcı";
+        bodyEl.innerHTML = '<div class="participants-empty">Henüz kimse katılmadı.</div>';
+        return;
+      }
+
+      entries.sort((a, b) => (a.ad_soyad || "").localeCompare(b.ad_soyad || "", "tr"));
+
+      countEl.textContent = `${entries.length} katılımcı`;
+      bodyEl.innerHTML = entries.map((e, i) => {
+        const contactParts = [e.telefon, e.email].filter(Boolean);
+        const contactHtml = contactParts.length
+          ? `<div class="participant-contact">${contactParts.join(" · ")}</div>`
+          : "";
+        return `
+          <div class="participant-row">
+            <span class="participant-num">${i + 1}.</span>
+            <div class="participant-info">
+              <div class="participant-name">${e.ad_soyad || "—"}</div>
+              ${contactHtml}
+            </div>
+            ${e.mesafe_secimi ? `<span class="participant-dist">${e.mesafe_secimi}</span>` : ""}
+          </div>`;
+      }).join("");
+    }
+
+    const apModalEl    = document.getElementById("apParticipantsModal");
+    const apCloseBtn   = document.getElementById("apParticipantsClose");
+    if (apCloseBtn) apCloseBtn.addEventListener("click", apCloseParticipants);
+    if (apModalEl) {
+      apModalEl.addEventListener("click", e => { if (e.target === apModalEl) apCloseParticipants(); });
+    }
+    document.addEventListener("keydown", e => { if (e.key === "Escape") apCloseParticipants(); });
+
     async function apLoadRaces() {
       apListEl.innerHTML = '<p style="opacity:.6;font-size:.9rem;">Yükleniyor...</p>';
       const { data, error } = await sb.from("races").select("*").order("tarih");
@@ -750,6 +823,7 @@ setupForm(
               ${dists ? `<div class="race-admin-dists">${dists}</div>` : ""}
             </div>
             <div class="race-admin-actions">
+              <button class="btn-ghost sm" data-ap-participants="${race.id}" data-ap-participants-name="${race.isim}">Katılımcılar</button>
               <button class="btn-ghost sm" data-ap-edit="${race.id}">Düzenle</button>
               <button class="btn-del" data-ap-del="${race.id}">Sil</button>
             </div>
@@ -760,8 +834,14 @@ setupForm(
     await apLoadRaces();
 
     apListEl.addEventListener("click", async function (ev) {
+      const participantsBtn = ev.target.closest("[data-ap-participants]");
       const editBtn = ev.target.closest("[data-ap-edit]");
       const delBtn  = ev.target.closest("[data-ap-del]");
+
+      if (participantsBtn) {
+        apShowParticipants(participantsBtn.dataset.apParticipants, participantsBtn.dataset.apParticipantsName);
+        return;
+      }
 
       if (editBtn) {
         const race = apAllRaces.find(r => r.id === editBtn.dataset.apEdit);
@@ -991,6 +1071,85 @@ setupForm(
 
   if (cancelBtn) cancelBtn.addEventListener("click", resetForm);
 
+  // Katılımcılar modal
+  function closeParticipantsModal() {
+    const modal = document.getElementById("participantsModal");
+    if (modal) modal.hidden = true;
+    document.body.style.overflow = "";
+  }
+
+  async function showParticipants(raceId, raceName) {
+    const modal   = document.getElementById("participantsModal");
+    const titleEl = document.getElementById("participantsModalTitle");
+    const countEl = document.getElementById("participantsModalCount");
+    const bodyEl  = document.getElementById("participantsModalBody");
+    if (!modal) return;
+
+    titleEl.textContent = raceName;
+    countEl.textContent = "Yükleniyor...";
+    bodyEl.innerHTML = "";
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+
+    const { data: entries, error } = await sb
+      .from("race_entries")
+      .select("user_id, mesafe_secimi")
+      .eq("race_id", raceId);
+
+    if (error) {
+      countEl.textContent = "";
+      bodyEl.innerHTML = `<p style="color:#bf3b3b;">Yüklenemedi: ${error.message}</p>`;
+      return;
+    }
+
+    if (!entries || entries.length === 0) {
+      countEl.textContent = "0 katılımcı";
+      bodyEl.innerHTML = '<div class="participants-empty">Henüz kimse katılmadı.</div>';
+      return;
+    }
+
+    const userIds = entries.map(e => e.user_id);
+    const { data: profileRows } = await sb
+      .from("profiles")
+      .select("id, ad_soyad, telefon, email")
+      .in("id", userIds);
+
+    const pMap = {};
+    (profileRows || []).forEach(p => { pMap[p.id] = p; });
+
+    entries.sort((a, b) => {
+      const na = pMap[a.user_id]?.ad_soyad || "";
+      const nb = pMap[b.user_id]?.ad_soyad || "";
+      return na.localeCompare(nb, "tr");
+    });
+
+    countEl.textContent = `${entries.length} katılımcı`;
+    bodyEl.innerHTML = entries.map((e, i) => {
+      const p = pMap[e.user_id] || {};
+      const contact = p.telefon || p.email || "";
+      return `
+        <div class="participant-row">
+          <span class="participant-num">${i + 1}.</span>
+          <span class="participant-name">${p.ad_soyad || "—"}</span>
+          ${e.mesafe_secimi ? `<span class="participant-dist">${e.mesafe_secimi}</span>` : ""}
+          ${contact ? `<span class="participant-contact">${contact}</span>` : ""}
+        </div>`;
+    }).join("");
+  }
+
+  // Modal kapat: buton, backdrop tıklama, Escape
+  const participantsModalEl = document.getElementById("participantsModal");
+  const participantsCloseBtn = document.getElementById("participantsModalClose");
+  if (participantsCloseBtn) participantsCloseBtn.addEventListener("click", closeParticipantsModal);
+  if (participantsModalEl) {
+    participantsModalEl.addEventListener("click", e => {
+      if (e.target === participantsModalEl) closeParticipantsModal();
+    });
+  }
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeParticipantsModal();
+  });
+
   // Yarışları listele
   async function loadAdminRaces() {
     listEl.innerHTML = '<p style="opacity:.6;font-size:.9rem;">Yükleniyor...</p>';
@@ -1023,6 +1182,7 @@ setupForm(
             ${dists ? `<div class="race-admin-dists">${dists}</div>` : ""}
           </div>
           <div class="race-admin-actions">
+            <button class="btn-ghost sm" data-participants-id="${race.id}" data-participants-name="${race.isim}">Katılımcılar</button>
             <button class="btn-ghost sm" data-edit-id="${race.id}">Düzenle</button>
             <button class="btn-del" data-del-id="${race.id}">Sil</button>
           </div>
@@ -1032,10 +1192,16 @@ setupForm(
 
   await loadAdminRaces();
 
-  // Düzenle / Sil — event delegation
+  // Düzenle / Sil / Katılımcılar — event delegation
   listEl.addEventListener("click", async function (ev) {
+    const participantsBtn = ev.target.closest("[data-participants-id]");
     const editBtn = ev.target.closest("[data-edit-id]");
     const delBtn  = ev.target.closest("[data-del-id]");
+
+    if (participantsBtn) {
+      showParticipants(participantsBtn.dataset.participantsId, participantsBtn.dataset.participantsName);
+      return;
+    }
 
     if (editBtn) {
       const race = allRaces.find(r => r.id === editBtn.dataset.editId);
