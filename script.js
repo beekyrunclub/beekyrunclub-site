@@ -130,11 +130,19 @@ if (sb) {
       if (raw) {
         try {
           const profileData = JSON.parse(raw);
-          const { error } = await sb.from("profiles").upsert(
-            { id: session.user.id, ...profileData },
-            { onConflict: "id" }
-          );
-          if (!error) localStorage.removeItem("beeky_pending_profile");
+          // Sadece bu kaydı oluşturan kullanıcıya uygula
+          if (profileData._email && profileData._email !== session.user.email) {
+            localStorage.removeItem("beeky_pending_profile");
+          } else {
+            const { _email, ...fields } = profileData;
+            const { data: existing } = await sb.from("profiles").select("id").eq("id", session.user.id).single();
+            if (!existing) {
+              const { error } = await sb.from("profiles").insert({ id: session.user.id, ...fields });
+              if (!error) localStorage.removeItem("beeky_pending_profile");
+            } else {
+              localStorage.removeItem("beeky_pending_profile");
+            }
+          }
         } catch (_e) { /* sessizce geç */ }
       }
       updateAuthUI();
@@ -365,6 +373,7 @@ setupForm(
     // E-posta onayı açıksa session gelmez — profil verisini sonrası için sakla
     if (!data.session) {
       localStorage.setItem("beeky_pending_profile", JSON.stringify({
+        _email:          email,
         ad_soyad:        ad,
         telefon:         tel || null,
         yas_araligi:     yas || null,
