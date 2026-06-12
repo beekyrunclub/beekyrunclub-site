@@ -10,6 +10,56 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css" />
+<style>
+  .photo { cursor: zoom-in; }
+
+  #lb-wrap {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(5,5,20,.92);
+    z-index: 9000;
+  }
+  #lb-wrap.open { display: block; }
+
+  #lb-img {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: calc(100% - 9rem);
+    max-height: 88vh;
+    display: block;
+    border-radius: 2px;
+    box-shadow: 0 24px 80px rgba(0,0,0,.6);
+  }
+
+  #lb-x, #lb-p, #lb-n {
+    position: absolute;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    line-height: 1;
+    z-index: 1;
+  }
+  #lb-x {
+    top: 1rem; right: 1.25rem;
+    background: transparent;
+    font-size: 2.5rem;
+    padding: .2rem .5rem;
+    opacity: .65;
+  }
+  #lb-x:hover { opacity: 1; }
+  #lb-p, #lb-n {
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,.15);
+    font-size: 2.2rem;
+    padding: .75rem 1.1rem;
+  }
+  #lb-p:hover, #lb-n:hover { background: rgba(255,255,255,.3); }
+  #lb-p { left: 0; }
+  #lb-n { right: 0; }
+</style>
 </head>
 <body>
 
@@ -111,6 +161,57 @@
   </div>
 </footer>
 
+  
+<!-- Lightbox -->
+<div id="lb-wrap">
+  <img id="lb-img" src="" alt="" />
+  <button id="lb-x">&times;</button>
+  <button id="lb-p">&#8249;</button>
+  <button id="lb-n">&#8250;</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
+<script>
+  var _photos = Array.from(document.querySelectorAll(".gallery-grid .photo img"));
+  var _cur = 0;
+
+  var wrap = document.getElementById("lb-wrap");
+  var img  = document.getElementById("lb-img");
+  var btnX = document.getElementById("lb-x");
+  var btnP = document.getElementById("lb-p");
+  var btnN = document.getElementById("lb-n");
+
+  function lbOpen(i) {
+    _cur = i;
+    img.src = _photos[i].src;
+    wrap.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function lbClose() {
+    wrap.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+  function lbGo(d) {
+    _cur = (_cur + d + _photos.length) % _photos.length;
+    img.src = _photos[_cur].src;
+  }
+
+  wrap.addEventListener("click", function(e) { if (e.target === wrap) lbClose(); });
+  btnX.addEventListener("click", lbClose);
+  btnP.addEventListener("click", function() { lbGo(-1); });
+  btnN.addEventListener("click", function() { lbGo(1); });
+
+  _photos.forEach(function(el, i) {
+    el.parentElement.addEventListener("click", function() { lbOpen(i); });
+  });
+
+  document.addEventListener("keydown", function(e) {
+    if (!wrap.classList.contains("open")) return;
+    if (e.key === "Escape")     lbClose();
+    if (e.key === "ArrowLeft")  { e.preventDefault(); lbGo(-1); }
+    if (e.key === "ArrowRight") { e.preventDefault(); lbGo(1); }
+  });
+</script>
 </body>
 </html>
