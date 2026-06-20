@@ -107,10 +107,59 @@
     <p class="auth-alt" style="margin-top:8px;">
       <a href="sifremi-unuttum.html">Şifremi unuttum</a>
     </p>
+    <p class="auth-alt" style="margin-top:8px;">
+      <a href="#" id="resendToggle">Onay e-postası gelmedi mi?</a>
+    </p>
+
+    <div id="resendWrap" hidden style="margin-top:16px;">
+      <div class="field full">
+        <label for="resendMail">E-posta adresin</label>
+        <input id="resendMail" type="email" placeholder="ornek@mail.com" autocomplete="email" />
+      </div>
+      <button class="btn" id="resendBtn" style="margin-top:12px;">TEKRAR GÖNDER →</button>
+      <div class="form-status" id="resendStatus" style="margin-top:10px;"></div>
+    </div>
   </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
+<script>
+  document.getElementById("resendToggle").addEventListener("click", function (e) {
+    e.preventDefault();
+    var wrap = document.getElementById("resendWrap");
+    wrap.hidden = !wrap.hidden;
+    if (!wrap.hidden) document.getElementById("resendMail").focus();
+  });
+
+  document.getElementById("resendBtn").addEventListener("click", async function () {
+    var email  = document.getElementById("resendMail").value.trim();
+    var status = document.getElementById("resendStatus");
+    var btn    = this;
+
+    if (!email) {
+      status.textContent = "E-posta adresini gir.";
+      status.className = "form-status err show";
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "GÖNDERİLİYOR...";
+    status.className = "form-status";
+
+    const { error } = await sb.auth.resend({ type: "signup", email });
+
+    btn.disabled = false;
+    btn.textContent = "TEKRAR GÖNDER →";
+
+    if (error) {
+      status.textContent = "Hata: " + error.message;
+      status.className = "form-status err show";
+    } else {
+      status.textContent = "Onay e-postası gönderildi. Gelen kutunu kontrol et.";
+      status.className = "form-status ok show";
+    }
+  });
+</script>
 </body>
 </html>
