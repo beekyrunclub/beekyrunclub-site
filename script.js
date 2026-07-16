@@ -620,7 +620,11 @@ setupForm(
       return;
     }
 
-    const races = racesRes.data;
+    const _all = racesRes.data;
+    const races = [
+      ..._all.filter(r => r.tarih >= today).sort((a, b) => a.tarih.localeCompare(b.tarih)),
+      ..._all.filter(r => r.tarih <  today).sort((a, b) => b.tarih.localeCompare(a.tarih))
+    ];
 
     // { raceId: { mesafe: "21K" | null } }
     const joined = {};
