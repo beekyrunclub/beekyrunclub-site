@@ -135,6 +135,8 @@
   .race-body { flex: 1; min-width: 0; }
   .race-name { font-family: var(--display); font-weight: 800; font-size: 1.05rem; line-height: 1.1; margin-bottom: 0.3rem; }
   .race-meta { font-size: 0.78rem; color: var(--blue-ink); opacity: 0.6; letter-spacing: 0.04em; }
+  .race-kontenjan { font-size: 0.75rem; font-weight: 600; color: #2a7a50; margin-top: 0.2rem; letter-spacing: 0.03em; }
+  .race-kontenjan.dolu { color: #b45000; }
 
   /* Mesafe seçici */
   .race-dist-picker { margin-top: 0.75rem; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
@@ -583,6 +585,11 @@
               <div class="field full">
                 <label for="apUrl">Kayıt / Bilgi Linki</label>
                 <input id="apUrl" name="url" type="url" placeholder="https://..." />
+              </div>
+              <div class="field full">
+                <label for="apKontenjan">Kontenjan</label>
+                <input id="apKontenjan" name="kontenjan" type="number" min="1" placeholder="Boş bırakırsan sınırsız" />
+                <span class="field-hint">Sınırlı katılım istiyorsan kişi sayısını gir</span>
               </div>
               <div class="form-status" id="apFormStatus"></div>
               <div class="admin-form-actions">

@@ -604,9 +604,10 @@ setupForm(
     if (!listEl) return;
 
     const today = new Date().toISOString().slice(0, 10);
-    const [racesRes, entriesRes] = await Promise.all([
+    const [racesRes, entriesRes, allEntriesRes] = await Promise.all([
       sb.from("races").select("*").order("tarih"),
-      sb.from("race_entries").select("race_id, mesafe_secimi").eq("user_id", userId)
+      sb.from("race_entries").select("race_id, mesafe_secimi").eq("user_id", userId),
+      sb.from("race_entries").select("race_id")
     ]);
 
     if (racesRes.error || !racesRes.data || racesRes.data.length === 0) {
@@ -625,6 +626,10 @@ setupForm(
     const joined = {};
     (entriesRes.data || []).forEach(e => { joined[e.race_id] = { mesafe: e.mesafe_secimi }; });
 
+    // { raceId: katılımcı sayısı }
+    const entryCounts = {};
+    (allEntriesRes.data || []).forEach(e => { entryCounts[e.race_id] = (entryCounts[e.race_id] || 0) + 1; });
+
     // Mesafe seçici açık yarış id'leri
     const pickerOpen = new Set();
 
@@ -635,9 +640,16 @@ setupForm(
         const myDist      = isJoined ? joined[race.id].mesafe : null;
         const hasDists    = Array.isArray(race.mesafeler) && race.mesafeler.length > 0;
         const showPicker  = !past && !isJoined && pickerOpen.has(race.id);
+        const katilimci   = entryCounts[race.id] || 0;
+        const kontenjan   = race.kontenjan || null;
+        const dolu        = kontenjan !== null && katilimci >= kontenjan && !isJoined;
 
         const d = new Date(race.tarih + "T00:00:00");
         const metaParts = [race.konum, hasDists ? race.mesafeler.join(" / ") : null].filter(Boolean);
+
+        const kontenjanHtml = kontenjan !== null && !past
+          ? `<div class="race-kontenjan ${dolu ? "dolu" : ""}">${dolu ? "Kontenjan doldu" : `${kontenjan - katilimci} yer kaldı`}</div>`
+          : "";
 
         const pickerHtml = showPicker ? `
           <div class="race-dist-picker">
@@ -658,6 +670,8 @@ setupForm(
             ctrlHtml = `
               <div class="race-joined-info">✓ Katılıyorum${myDist ? ` · ${myDist}` : ""}</div>
               <button class="race-join-btn leave" data-action="leave" data-race-id="${race.id}">Vazgeç</button>`;
+          } else if (dolu) {
+            ctrlHtml = `<span class="race-saglik-warn">Kontenjan doldu</span>`;
           } else if (!showPicker) {
             ctrlHtml = `<button class="race-join-btn" data-action="join" data-race-id="${race.id}">Katılacağım →</button>`;
           }
@@ -669,6 +683,7 @@ setupForm(
             <div class="race-body">
               <div class="race-name">${race.isim}</div>
               ${metaParts.length ? `<div class="race-meta">${metaParts.join(" · ")}</div>` : ""}
+              ${kontenjanHtml}
               ${pickerHtml}
             </div>
             <div class="race-ctrl">${ctrlHtml}</div>
@@ -738,22 +753,25 @@ setupForm(
     let apEditingId = null;
 
     function apGetFormData() {
+      const kontenjanVal = parseInt(document.getElementById("apKontenjan").value, 10);
       return {
         isim:      document.getElementById("apIsim").value.trim(),
         tarih:     document.getElementById("apTarih").value,
         konum:     document.getElementById("apKonum").value.trim() || null,
         url:       document.getElementById("apUrl").value.trim() || null,
         mesafeler: document.getElementById("apMesafeler").value
-          .split(",").map(s => s.trim()).filter(Boolean)
+          .split(",").map(s => s.trim()).filter(Boolean),
+        kontenjan: isNaN(kontenjanVal) || kontenjanVal < 1 ? null : kontenjanVal
       };
     }
 
     function apFillForm(race) {
-      document.getElementById("apIsim").value      = race.isim  || "";
-      document.getElementById("apTarih").value     = race.tarih || "";
-      document.getElementById("apKonum").value     = race.konum || "";
-      document.getElementById("apUrl").value       = race.url   || "";
-      document.getElementById("apMesafeler").value = (race.mesafeler || []).join(", ");
+      document.getElementById("apIsim").value       = race.isim      || "";
+      document.getElementById("apTarih").value      = race.tarih     || "";
+      document.getElementById("apKonum").value      = race.konum     || "";
+      document.getElementById("apUrl").value        = race.url       || "";
+      document.getElementById("apMesafeler").value  = (race.mesafeler || []).join(", ");
+      document.getElementById("apKontenjan").value  = race.kontenjan != null ? race.kontenjan : "";
       apEditingId = race.id;
       apFormTitle.innerHTML = `Yarışı <em>düzenle.</em>`;
       apSubmitBtn.textContent = "GÜNCELLE →";
