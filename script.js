@@ -326,7 +326,7 @@ setupForm(
     const password = form.querySelector('input[name="password"]').value;
     const ad = form.querySelector('input[name="ad_soyad"]').value.trim();
     const tel = form.querySelector('input[name="telefon"]').value.trim();
-    const yasEl     = form.querySelector('[name="yas_araligi"]');
+    const yasEl     = form.querySelector('[name="dogum_tarihi"]');
     const tempoEl   = form.querySelector('[name="tempo_seviyesi"]');
     const bultenEl  = form.querySelector('input[name="bulten_izni"]');
     const katilimEl = form.querySelector('input[name="katilim"]:checked');
@@ -356,7 +356,7 @@ setupForm(
         data: {
           ad_soyad:        ad,
           telefon:         tel || null,
-          yas_araligi:     yas || null,
+          dogum_tarihi:    yas || null,
           tempo_seviyesi:  tempo || null,
           katilim_tercihi: katilim || null,
           bulten_izni:     bulten,
@@ -484,7 +484,7 @@ setupForm(
       profile = data;
       setText("pAd",      data.ad_soyad        || "—");
       setText("pTel",     data.telefon          || "—");
-      setText("pYas",     data.yas_araligi      || "—");
+      setText("pYas",     data.dogum_tarihi      || "—");
       setText("pTempo",   data.tempo_seviyesi   || "—");
       setText("pKatilim", data.katilim_tercihi  || "—");
       setText("pBulten",  data.bulten_izni ? "Evet" : "Hayır");
@@ -534,7 +534,7 @@ setupForm(
     if (profile) {
       setVal("eAd",      profile.ad_soyad);
       setVal("eTel",     profile.telefon);
-      setVal("eYas",     profile.yas_araligi);
+      setVal("eYas",     profile.dogum_tarihi);
       setVal("eTempo",   profile.tempo_seviyesi);
       setVal("eKatilim", profile.katilim_tercihi);
       const bultenEl = document.getElementById("eBulten");
@@ -568,7 +568,7 @@ setupForm(
       const updates = {
         ad_soyad:         document.getElementById("eAd").value.trim(),
         telefon:          document.getElementById("eTel").value.trim() || null,
-        yas_araligi:      document.getElementById("eYas").value || null,
+        dogum_tarihi:     document.getElementById("eYas").value || null,
         tempo_seviyesi:   document.getElementById("eTempo").value || null,
         katilim_tercihi:  document.getElementById("eKatilim").value || null,
         bulten_izni:      document.getElementById("eBulten").checked
