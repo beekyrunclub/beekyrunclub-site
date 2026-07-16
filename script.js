@@ -330,10 +330,12 @@ setupForm(
     const tempoEl   = form.querySelector('[name="tempo_seviyesi"]');
     const bultenEl  = form.querySelector('input[name="bulten_izni"]');
     const katilimEl = form.querySelector('input[name="katilim"]:checked');
+    const saglikEl  = form.querySelector('input[name="saglik_onay"]');
     const yas     = yasEl     ? yasEl.value     : "";
     const tempo   = tempoEl   ? tempoEl.value   : "";
     const bulten  = bultenEl  ? bultenEl.checked : false;
     const katilim = katilimEl ? katilimEl.value  : "";
+    const saglik  = saglikEl  ? saglikEl.checked : false;
 
     sendBtn.disabled = true;
     backBtn.disabled = true;
@@ -357,7 +359,8 @@ setupForm(
           yas_araligi:     yas || null,
           tempo_seviyesi:  tempo || null,
           katilim_tercihi: katilim || null,
-          bulten_izni:     bulten
+          bulten_izni:     bulten,
+          saglik_onay:     saglik
         }
       }
     });
@@ -379,7 +382,8 @@ setupForm(
         yas_araligi:     yas || null,
         tempo_seviyesi:  tempo || null,
         katilim_tercihi: katilim || null,
-        bulten_izni:     bulten
+        bulten_izni:     bulten,
+        saglik_onay:     saglik
       }));
       resetBtns();
       status.textContent = "Hesabın oluşturuldu. Girişini tamamlamak için e-postana gelen onay bağlantısına tıkla.";
@@ -395,7 +399,8 @@ setupForm(
       yas_araligi:     yas || null,
       tempo_seviyesi:  tempo || null,
       katilim_tercihi: katilim || null,
-      bulten_izni:     bulten
+      bulten_izni:     bulten,
+      saglik_onay:     saglik
     });
     if (pErr) {
       resetBtns();
@@ -484,9 +489,39 @@ setupForm(
       setText("pKatilim", data.katilim_tercihi  || "—");
       setText("pBulten",  data.bulten_izni ? "Evet" : "Hayır");
 
+      const saglikBanner = document.getElementById("saglikBanner");
+      if (saglikBanner) saglikBanner.hidden = !!data.saglik_onay;
     }
   }
   await loadProfile();
+
+  // --- Sağlık beyanı onay ---
+  const saglikKabulBtn = document.getElementById("saglikKabulBtn");
+  if (saglikKabulBtn) {
+    saglikKabulBtn.addEventListener("click", async function () {
+      const cb = document.getElementById("saglikCb");
+      const st = document.getElementById("saglikStatus");
+      if (!cb.checked) {
+        st.textContent = "Lütfen beyanı onaylayın.";
+        st.className = "form-status err show";
+        return;
+      }
+      saglikKabulBtn.disabled = true;
+      saglikKabulBtn.textContent = "KAYDEDİLİYOR...";
+      const { error } = await sb.from("profiles").update({ saglik_onay: true }).eq("id", userId);
+      saglikKabulBtn.disabled = false;
+      saglikKabulBtn.textContent = "ONAYLA →";
+      if (error) {
+        st.textContent = "Hata: " + error.message;
+        st.className = "form-status err show";
+      } else {
+        profile = { ...profile, saglik_onay: true };
+        document.getElementById("saglikBanner").hidden = true;
+        if (typeof loadRaces === "function") await loadRaces();
+        else renderRaces && renderRaces();
+      }
+    });
+  }
 
   // --- Düzenleme toggle ---
   const editBtn      = document.getElementById("editBtn");
@@ -617,7 +652,9 @@ setupForm(
 
         let ctrlHtml = "";
         if (!past) {
-          if (isJoined) {
+          if (!profile?.saglik_onay) {
+            ctrlHtml = `<span class="race-saglik-warn">Yarışa katılmak için sağlık beyanını onayla</span>`;
+          } else if (isJoined) {
             ctrlHtml = `
               <div class="race-joined-info">✓ Katılıyorum${myDist ? ` · ${myDist}` : ""}</div>
               <button class="race-join-btn leave" data-action="leave" data-race-id="${race.id}">Vazgeç</button>`;
