@@ -604,10 +604,10 @@ setupForm(
     if (!listEl) return;
 
     const today = new Date().toISOString().slice(0, 10);
-    const [racesRes, entriesRes, allEntriesRes] = await Promise.all([
+    const [racesRes, entriesRes, countsRes] = await Promise.all([
       sb.from("races").select("*").order("tarih"),
       sb.from("race_entries").select("race_id, mesafe_secimi").eq("user_id", userId),
-      sb.from("race_entries").select("race_id")
+      sb.rpc("get_race_entry_counts")
     ]);
 
     if (racesRes.error || !racesRes.data || racesRes.data.length === 0) {
@@ -628,7 +628,7 @@ setupForm(
 
     // { raceId: katılımcı sayısı }
     const entryCounts = {};
-    (allEntriesRes.data || []).forEach(e => { entryCounts[e.race_id] = (entryCounts[e.race_id] || 0) + 1; });
+    (countsRes.data || []).forEach(r => { entryCounts[r.race_id] = Number(r.entry_count); });
 
     // Mesafe seçici açık yarış id'leri
     const pickerOpen = new Set();
