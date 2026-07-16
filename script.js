@@ -712,14 +712,21 @@ setupForm(
         } else {
           const { error } = await sb.from("race_entries")
             .upsert({ user_id: userId, race_id: raceId, mesafe_secimi: null }, { onConflict: "user_id,race_id" });
-          if (!error) joined[raceId] = { mesafe: null };
+          if (!error) {
+            if (!joined[raceId]) entryCounts[raceId] = (entryCounts[raceId] || 0) + 1;
+            joined[raceId] = { mesafe: null };
+          }
           renderRaces();
         }
       } else if (action === "pick") {
         const dist = target.dataset.dist;
         const { error } = await sb.from("race_entries")
           .upsert({ user_id: userId, race_id: raceId, mesafe_secimi: dist }, { onConflict: "user_id,race_id" });
-        if (!error) { joined[raceId] = { mesafe: dist }; pickerOpen.delete(raceId); }
+        if (!error) {
+          if (!joined[raceId]) entryCounts[raceId] = (entryCounts[raceId] || 0) + 1;
+          joined[raceId] = { mesafe: dist };
+          pickerOpen.delete(raceId);
+        }
         renderRaces();
       } else if (action === "cancel") {
         pickerOpen.delete(raceId);
@@ -727,7 +734,10 @@ setupForm(
       } else if (action === "leave") {
         const { error } = await sb.from("race_entries")
           .delete().eq("user_id", userId).eq("race_id", raceId);
-        if (!error) delete joined[raceId];
+        if (!error) {
+          entryCounts[raceId] = Math.max(0, (entryCounts[raceId] || 0) - 1);
+          delete joined[raceId];
+        }
         renderRaces();
       }
     });
