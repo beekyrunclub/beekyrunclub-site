@@ -248,6 +248,8 @@
     padding-top: 1.5rem; border-top: 1px solid var(--line); flex-wrap: wrap;
   }
   .field-hint { font-size: 0.72rem; opacity: 0.55; margin-top: 0.35rem; }
+  .tur-toggle { display: flex; gap: 1.5rem; margin-top: .5rem; }
+  .tur-opt { display: flex; align-items: center; gap: .4rem; font-size: .875rem; cursor: pointer; }
 
   .race-admin-card {
     display: flex;
@@ -505,7 +507,7 @@
                 <select id="eKatilim" name="katilim_tercihi">
                   <option value="">Seçiniz</option>
                   <option>Çarşamba 21:00</option>
-                  <option>Pazar 09:00</option>
+                  <option>Pazar 08:00</option>
                   <option>İkisi de</option>
                 </select>
               </div>
@@ -558,6 +560,14 @@
               <h2 class="section-title" id="apFormTitle">Yeni Yarış <em>ekle.</em></h2>
             </div>
             <form class="form admin-form" id="apForm" novalidate>
+              <div class="field full">
+                <label>Tür *</label>
+                <div class="tur-toggle">
+                  <label class="tur-opt"><input type="radio" name="tur" value="etkinlik" checked /> Etkinlik</label>
+                  <label class="tur-opt"><input type="radio" name="tur" value="kos" /> Standart Koşu</label>
+                </div>
+                <span class="field-hint">Etkinlikler takvim sayfasında herkese gösterilir</span>
+              </div>
               <div class="field full">
                 <label for="apIsim">Yarış Adı *</label>
                 <input id="apIsim" name="isim" type="text" required placeholder="Vodafone İstanbul Yarı Maratonu" />

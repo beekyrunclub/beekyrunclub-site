@@ -10,6 +10,83 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css" />
+<style>
+  /* Race cards */
+  .race-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+
+  .race-card {
+    display: flex; align-items: center; gap: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #fff;
+    transition: border-color .2s;
+  }
+  .race-card.race-past { opacity: .55; }
+  .race-card.joined { border-color: var(--blue); }
+
+  .race-date {
+    flex-shrink: 0; text-align: center; min-width: 2.5rem;
+    font-family: var(--display); line-height: 1;
+  }
+  .race-date .d { display: block; font-size: 2rem; font-weight: 900; }
+  .race-date .m { display: block; font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: .55; }
+
+  .race-body { flex: 1; min-width: 0; }
+  .race-name { font-family: var(--display); font-weight: 800; font-size: 1.05rem; line-height: 1.1; margin-bottom: .3rem; }
+  .race-meta { font-size: .78rem; color: var(--blue-ink); opacity: .6; letter-spacing: .04em; }
+  .race-kontenjan { font-size: .75rem; font-weight: 600; color: #2a7a50; margin-top: .2rem; letter-spacing: .03em; }
+  .race-kontenjan.dolu { color: #b45000; }
+
+  .race-ctrl { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: .4rem; }
+
+  .race-join-btn {
+    font-family: var(--display); font-weight: 800; font-size: .78rem;
+    letter-spacing: .08em; text-transform: uppercase;
+    padding: .55rem 1.1rem; border-radius: 2px; cursor: pointer;
+    border: 1.5px solid var(--blue); background: var(--blue); color: var(--cream);
+    transition: background .15s, color .15s; white-space: nowrap;
+  }
+  .race-join-btn:hover { background: transparent; color: var(--blue); }
+  .race-join-btn.leave { background: transparent; color: var(--blue); }
+  .race-join-btn.leave:hover { background: var(--blue); color: var(--cream); }
+  .race-join-btn:disabled { opacity: .5; cursor: default; }
+
+  .race-joined-info {
+    font-family: var(--display); font-weight: 700; font-size: .8rem;
+    color: #2a7a50; letter-spacing: .05em; white-space: nowrap;
+  }
+
+  /* Mesafe seçici */
+  .race-dist-picker { margin-top: .75rem; display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+  .race-pick-label { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); font-weight: 600; }
+  .race-dist-opts { display: flex; gap: .4rem; flex-wrap: wrap; }
+  .race-dist-opt {
+    background: transparent; border: 1px solid var(--line);
+    border-radius: 2px; padding: .3rem .7rem;
+    font-size: .8rem; cursor: pointer; transition: background .15s, border-color .15s;
+  }
+  .race-dist-opt:hover { background: var(--blue); color: var(--cream); border-color: var(--blue); }
+  .race-cancel-dist { background: none; border: none; font-size: .75rem; opacity: .55; cursor: pointer; text-decoration: underline; }
+
+  .race-saglik-warn { font-size: .78rem; color: #b45000; opacity: .85; font-style: italic; }
+
+  /* Üye ol CTA */
+  .race-join-cta {
+    font-family: var(--display); font-weight: 800; font-size: .78rem;
+    letter-spacing: .08em; text-transform: uppercase;
+    padding: .55rem 1.1rem; border-radius: 2px;
+    border: 1.5px solid var(--blue); color: var(--blue);
+    background: transparent; white-space: nowrap;
+    text-decoration: none; display: inline-block;
+    transition: background .15s, color .15s;
+  }
+  .race-join-cta:hover { background: var(--blue); color: var(--cream); }
+
+  /* Genel boş durum */
+  .race-empty { text-align: center; padding: 4rem 1rem; opacity: .6; }
+  .race-empty .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+</style>
 </head>
 <body>
 
@@ -43,14 +120,15 @@
     </a>
 
     <div class="section-head">
-      <span class="section-num">04 / YARIŞ TAKVİMİ</span>
+      <span class="section-num">04 / ETKİNLİK TAKVİMİ</span>
       <h2 class="section-title">Sırada <em>ne var?</em></h2>
     </div>
 
-    <div class="calendar-empty">
-      <div class="icon">→</div>
-      <h3>Yakında Burada</h3>
-      <p>Birlikte katılacağımız yarışları ve özel etkinlikleri buradan duyuracağız. Şimdilik en güncel bilgi için Instagram ve WhatsApp grubumuzu takip edebilirsin.</p>
+    <div class="race-list" id="racesList">
+      <div class="race-empty">
+        <div class="icon">→</div>
+        <p>Yükleniyor...</p>
+      </div>
     </div>
   </div>
 </section>
@@ -107,7 +185,179 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
+<script>
+(async function () {
+  const listEl = document.getElementById("racesList");
+  const MONTHS = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
+  const today  = new Date().toISOString().slice(0, 10);
+
+  // --- Oturum ve veri yükle ---
+  const { data: { session } } = await sb.auth.getSession();
+  const userId = session?.user?.id || null;
+
+  const basePromises = [
+    sb.from("races").select("*").eq("tur", "etkinlik").order("tarih"),
+    sb.rpc("get_race_entry_counts")
+  ];
+  if (userId) {
+    basePromises.push(sb.from("race_entries").select("race_id, mesafe_secimi").eq("user_id", userId));
+    basePromises.push(sb.from("profiles").select("saglik_onay").eq("id", userId).single());
+  }
+
+  const results = await Promise.all(basePromises);
+  const [racesRes, countsRes, entriesRes, profileRes] = results;
+
+  if (racesRes.error) {
+    listEl.innerHTML = `
+      <div class="race-empty">
+        <div class="icon">⚠</div>
+        <h3>Yüklenemedi</h3>
+        <p style="font-size:.8rem;opacity:.6;">${racesRes.error.message}</p>
+      </div>`;
+    return;
+  }
+  if (!racesRes.data || racesRes.data.length === 0) {
+    listEl.innerHTML = `
+      <div class="race-empty">
+        <div class="icon">🏁</div>
+        <h3>Yakında yarış takvimi</h3>
+        <p>Kulüp olarak katılacağımız yarışlar burada görünecek.</p>
+      </div>`;
+    return;
+  }
+
+  const _all = racesRes.data;
+  const races = [
+    ..._all.filter(r => r.tarih >= today).sort((a, b) => a.tarih.localeCompare(b.tarih)),
+    ..._all.filter(r => r.tarih <  today).sort((a, b) => b.tarih.localeCompare(a.tarih))
+  ];
+
+  const entryCounts = {};
+  (countsRes.data || []).forEach(r => { entryCounts[r.race_id] = Number(r.entry_count); });
+
+  const joined = {};
+  if (userId && entriesRes) {
+    (entriesRes.data || []).forEach(e => { joined[e.race_id] = { mesafe: e.mesafe_secimi }; });
+  }
+
+  const saglikOnay = profileRes?.data?.saglik_onay || false;
+
+  const pickerOpen = new Set();
+
+  function render() {
+    listEl.innerHTML = races.map(race => {
+      const past       = race.tarih < today;
+      const isJoined   = !!joined[race.id];
+      const myDist     = isJoined ? joined[race.id].mesafe : null;
+      const hasDists   = Array.isArray(race.mesafeler) && race.mesafeler.length > 0;
+      const showPicker = !past && !isJoined && pickerOpen.has(race.id);
+      const katilimci  = entryCounts[race.id] || 0;
+      const kontenjan  = race.kontenjan || null;
+      const dolu       = kontenjan !== null && katilimci >= kontenjan && !isJoined;
+
+      const d = new Date(race.tarih + "T00:00:00");
+      const metaParts = [race.konum, hasDists ? race.mesafeler.join(" / ") : null].filter(Boolean);
+
+      const kontenjanHtml = kontenjan !== null && !past
+        ? `<div class="race-kontenjan ${dolu ? "dolu" : ""}">${dolu ? "Kontenjan doldu" : `${kontenjan - katilimci} yer kaldı`}</div>`
+        : "";
+
+      const pickerHtml = showPicker ? `
+        <div class="race-dist-picker">
+          <span class="race-pick-label">Mesafe:</span>
+          <div class="race-dist-opts">
+            ${race.mesafeler.map(m =>
+              `<button class="race-dist-opt" data-action="pick" data-race-id="${race.id}" data-dist="${m}">${m}</button>`
+            ).join("")}
+          </div>
+          <button class="race-cancel-dist" data-action="cancel" data-race-id="${race.id}">İptal</button>
+        </div>` : "";
+
+      let ctrlHtml = "";
+      if (!past) {
+        if (!userId) {
+          ctrlHtml = `<a class="race-join-cta" href="index.html#kayit">Katılmak için üye ol →</a>`;
+        } else if (!saglikOnay) {
+          ctrlHtml = `<span class="race-saglik-warn">Katılmak için <a href="profil.html" style="color:inherit;">sağlık beyanını</a> onayla</span>`;
+        } else if (isJoined) {
+          ctrlHtml = `
+            <div class="race-joined-info">✓ Katılıyorum${myDist ? ` · ${myDist}` : ""}</div>
+            <button class="race-join-btn leave" data-action="leave" data-race-id="${race.id}">Vazgeç</button>`;
+        } else if (dolu) {
+          ctrlHtml = `<span class="race-saglik-warn">Kontenjan doldu</span>`;
+        } else if (!showPicker) {
+          ctrlHtml = `<button class="race-join-btn" data-action="join" data-race-id="${race.id}">Katılacağım →</button>`;
+        }
+      }
+
+      return `
+        <div class="race-card ${isJoined ? "joined" : ""} ${past ? "race-past" : ""}" data-race-id="${race.id}">
+          <div class="race-date"><span class="d">${d.getDate()}</span><span class="m">${MONTHS[d.getMonth()]}</span></div>
+          <div class="race-body">
+            <div class="race-name">${race.isim}</div>
+            ${metaParts.length ? `<div class="race-meta">${metaParts.join(" · ")}</div>` : ""}
+            ${kontenjanHtml}
+            ${pickerHtml}
+          </div>
+          <div class="race-ctrl">${ctrlHtml}</div>
+        </div>`;
+    }).join("");
+  }
+
+  render();
+
+  // --- Katıl / Vazgeç ---
+  listEl.addEventListener("click", async function (ev) {
+    const target = ev.target.closest("[data-action]");
+    if (!target || target.disabled) return;
+
+    const action = target.dataset.action;
+    const raceId = target.dataset.raceId;
+    const race   = races.find(r => r.id === raceId);
+    if (!race) return;
+
+    const hasDists = Array.isArray(race.mesafeler) && race.mesafeler.length > 0;
+    target.disabled = true;
+
+    if (action === "join") {
+      if (hasDists) {
+        pickerOpen.add(raceId);
+        render();
+      } else {
+        const { error } = await sb.from("race_entries")
+          .upsert({ user_id: userId, race_id: raceId, mesafe_secimi: null }, { onConflict: "user_id,race_id" });
+        if (!error) {
+          if (!joined[raceId]) entryCounts[raceId] = (entryCounts[raceId] || 0) + 1;
+          joined[raceId] = { mesafe: null };
+        }
+        render();
+      }
+    } else if (action === "pick") {
+      const dist = target.dataset.dist;
+      const { error } = await sb.from("race_entries")
+        .upsert({ user_id: userId, race_id: raceId, mesafe_secimi: dist }, { onConflict: "user_id,race_id" });
+      if (!error) {
+        if (!joined[raceId]) entryCounts[raceId] = (entryCounts[raceId] || 0) + 1;
+        joined[raceId] = { mesafe: dist };
+        pickerOpen.delete(raceId);
+      }
+      render();
+    } else if (action === "cancel") {
+      pickerOpen.delete(raceId);
+      render();
+    } else if (action === "leave") {
+      const { error } = await sb.from("race_entries")
+        .delete().eq("user_id", userId).eq("race_id", raceId);
+      if (!error) {
+        entryCounts[raceId] = Math.max(0, (entryCounts[raceId] || 0) - 1);
+        delete joined[raceId];
+      }
+      render();
+    }
+  });
+})();
+</script>
 </body>
 </html>

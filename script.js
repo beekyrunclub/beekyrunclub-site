@@ -37,10 +37,10 @@ const sb = window.supabase
 
   const nextSun = new Date(now);
   nextSun.setDate(now.getDate() + ((0 - day + 7) % 7 || 7));
-  nextSun.setHours(8, 30, 0, 0);
-  if (day === 0 && hour < 8.5) { nextSun.setDate(now.getDate()); nextSun.setHours(8, 30, 0, 0); }
+  nextSun.setHours(8, 0, 0, 0);
+  if (day === 0 && hour < 8) { nextSun.setDate(now.getDate()); nextSun.setHours(8, 0, 0, 0); }
 
-  if (nextSun < nextWed) { next = "PAZAR"; time = "08:30"; }
+  if (nextSun < nextWed) { next = "PAZAR"; time = "08:00"; }
 
   dayEl.textContent = next;
   timeEl.textContent = time;
@@ -768,6 +768,7 @@ setupForm(
 
     function apGetFormData() {
       const kontenjanVal = parseInt(document.getElementById("apKontenjan").value, 10);
+      const turEl = document.querySelector('input[name="tur"]:checked');
       return {
         isim:      document.getElementById("apIsim").value.trim(),
         tarih:     document.getElementById("apTarih").value,
@@ -775,7 +776,8 @@ setupForm(
         url:       document.getElementById("apUrl").value.trim() || null,
         mesafeler: document.getElementById("apMesafeler").value
           .split(",").map(s => s.trim()).filter(Boolean),
-        kontenjan: isNaN(kontenjanVal) || kontenjanVal < 1 ? null : kontenjanVal
+        kontenjan: isNaN(kontenjanVal) || kontenjanVal < 1 ? null : kontenjanVal,
+        tur:       turEl ? turEl.value : "etkinlik"
       };
     }
 
@@ -786,6 +788,8 @@ setupForm(
       document.getElementById("apUrl").value        = race.url       || "";
       document.getElementById("apMesafeler").value  = (race.mesafeler || []).join(", ");
       document.getElementById("apKontenjan").value  = race.kontenjan != null ? race.kontenjan : "";
+      const turRadio = document.querySelector(`input[name="tur"][value="${race.tur || "etkinlik"}"]`);
+      if (turRadio) turRadio.checked = true;
       apEditingId = race.id;
       apFormTitle.innerHTML = `Yarışı <em>düzenle.</em>`;
       apSubmitBtn.textContent = "GÜNCELLE →";

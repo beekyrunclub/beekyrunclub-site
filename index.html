@@ -104,6 +104,49 @@
   </div>
 </div>
 
+<!-- ============ ETKİNLİKLER CTA ============ -->
+<section id="etkinlikler-cta">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="section-num">ETKİNLİKLER</span>
+      <h2 class="section-title">Sırada <em>ne var?</em></h2>
+    </div>
+    <div class="ev-list" id="evList">
+      <div class="ev-loading">Yükleniyor…</div>
+    </div>
+    <div style="margin-top:2rem;">
+      <a class="btn" href="takvim.html" style="display:inline-block;text-decoration:none;">TÜM ETKİNLİKLER →</a>
+    </div>
+  </div>
+</section>
+<style>
+  #etkinlikler-cta { padding: 4rem 0; }
+  .ev-list { display: flex; flex-direction: column; gap: .75rem; margin-top: 1.5rem; }
+  .ev-card {
+    display: flex; align-items: center; gap: 1.25rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    text-decoration: none; color: inherit;
+  }
+  .ev-date {
+    flex-shrink: 0; text-align: center; min-width: 2.25rem;
+    font-family: var(--display); line-height: 1;
+  }
+  .ev-date .d { display: block; font-size: 1.75rem; font-weight: 900; }
+  .ev-date .m { display: block; font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: .55; }
+  .ev-body { flex: 1; min-width: 0; }
+  .ev-name { font-family: var(--display); font-weight: 800; font-size: 1rem; line-height: 1.15; }
+  .ev-meta { font-size: .75rem; opacity: .55; margin-top: .2rem; }
+  .ev-arr { flex-shrink: 0; font-size: 1.25rem; opacity: .35; }
+  .ev-loading { opacity: .5; font-size: .9rem; }
+  .ev-empty { opacity: .55; font-size: .9rem; }
+  @media (max-width: 480px) {
+    .ev-date .d { font-size: 1.4rem; }
+    .ev-name { font-size: .9rem; }
+  }
+</style>
+
 <!-- ============ ABOUT ============ -->
 <section id="hakkimizda">
   <div class="container reveal">
@@ -126,7 +169,7 @@
         <span class="item-num">01</span>
         <div>
           <h4>Çarşamba ve Pazar</h4>
-          <p>Koşularımız herkese açık ve tamamen ücretsiz. Çarşamba 21:00'de akşam serinliğinde, Pazar 09:00'da güneşle birlikte Solde Cafe'de buluşuyoruz. Profesyonel bir atlet olmana, hatta daha önce hiç koşmuş olmana bile gerek yok — tek ihtiyacın bir çift ayakkabı ve orada olma isteği.</p>
+          <p>Koşularımız herkese açık ve tamamen ücretsiz. Çarşamba 21:00'de akşam serinliğinde, Pazar 08:00'de güneşle birlikte Solde Cafe'de buluşuyoruz. Profesyonel bir atlet olmana, hatta daha önce hiç koşmuş olmana bile gerek yok — tek ihtiyacın bir çift ayakkabı ve orada olma isteği.</p>
         </div>
       </div>
       <div class="about-item">
@@ -456,7 +499,7 @@
             <label>Hangi koşulara katılmak istersin?</label>
             <div class="checks">
               <label class="check"><input type="radio" name="katilim" value="Çarşamba 21:00" /> Çarşamba 21:00</label>
-              <label class="check"><input type="radio" name="katilim" value="Pazar 09:00" /> Pazar 09:00</label>
+              <label class="check"><input type="radio" name="katilim" value="Pazar 08:00" /> Pazar 08:00</label>
               <label class="check"><input type="radio" name="katilim" value="İkisi de" checked /> İkisi de</label>
             </div>
           </div>
@@ -518,5 +561,39 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
+<script>
+(async function () {
+  const listEl = document.getElementById("evList");
+  if (!listEl || !sb) return;
+
+  const MONTHS = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
+  const today  = new Date().toISOString().slice(0, 10);
+
+  const { data, error } = await sb.from("races")
+    .select("id, isim, tarih, konum")
+    .eq("tur", "etkinlik")
+    .gte("tarih", today)
+    .order("tarih")
+    .limit(3);
+
+  if (error || !data || data.length === 0) {
+    listEl.innerHTML = `<div class="ev-empty">Yakında etkinlikler burada görünecek.</div>`;
+    return;
+  }
+
+  listEl.innerHTML = data.map(race => {
+    const d = new Date(race.tarih + "T00:00:00");
+    return `
+      <a class="ev-card" href="takvim.html">
+        <div class="ev-date"><span class="d">${d.getDate()}</span><span class="m">${MONTHS[d.getMonth()]}</span></div>
+        <div class="ev-body">
+          <div class="ev-name">${race.isim}</div>
+          ${race.konum ? `<div class="ev-meta">${race.konum}</div>` : ""}
+        </div>
+        <span class="ev-arr">→</span>
+      </a>`;
+  }).join("");
+})();
+</script>
 </body>
 </html>
