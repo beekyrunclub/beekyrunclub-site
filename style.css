@@ -117,6 +117,24 @@
   }
 
   /* ============ HERO ============ */
+  .hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+
+  .hero-video-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(245, 240, 232, 0.72);
+    z-index: 1;
+    pointer-events: none;
+  }
+
   .hero {
     min-height: 100vh;
     padding: 8rem 2rem 3rem;
