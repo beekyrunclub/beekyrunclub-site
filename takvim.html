@@ -83,6 +83,13 @@
   }
   .race-join-cta:hover { background: var(--blue); color: var(--cream); }
 
+  @media (max-width: 600px) {
+    .race-card { flex-wrap: wrap; gap: .75rem; padding: 1rem; }
+    .race-ctrl { width: 100%; flex-direction: row; justify-content: flex-end; margin-top: .25rem; }
+    .race-join-btn, .race-join-cta, .race-saglik-warn { font-size: .72rem; }
+    .race-name { font-size: .95rem; }
+  }
+
   /* Genel boş durum */
   .race-empty { text-align: center; padding: 4rem 1rem; opacity: .6; }
   .race-empty .icon { font-size: 2.5rem; margin-bottom: 1rem; }

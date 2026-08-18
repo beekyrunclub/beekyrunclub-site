@@ -1497,6 +1497,10 @@
     .run-card .time { font-size: 2rem; }
     .stat .num { font-size: 2.5rem; }
     .sponsor-info h3 { font-size: 2.5rem; }
+    .next-run { width: 100%; }
+    .schedule { grid-template-columns: 1fr; }
+    .checks { flex-direction: column; gap: 1rem; }
+    .section-title { font-size: clamp(2rem, 9vw, 3rem); }
   }
 
   /* ============ ALT SAYFA BANNER'LARI (index) ============ */
@@ -1966,9 +1970,19 @@
   }
 
   @media (max-width: 600px) {
-    .modal { padding: 2rem 1.4rem; }
+    .modal { padding: 1.75rem 1.25rem; }
+    .modal-overlay { padding: 0; align-items: flex-end; }
+    .modal {
+      max-height: 92vh;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+    }
     .wizard-fields { grid-template-columns: 1fr; }
     .wizard-nav { flex-wrap: wrap; }
     .wizard-nav .btn,
-    .wizard-nav .btn-ghost { flex: 1; }
+    .wizard-nav .btn-ghost { flex: 1; text-align: center; }
+    .join-cta-steps { display: none; }
   }

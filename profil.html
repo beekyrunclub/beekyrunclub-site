@@ -193,9 +193,15 @@
     .profil-layout { grid-template-columns: 1fr; gap: 3rem; }
   }
   @media (max-width: 600px) {
-    .race-card { flex-wrap: wrap; }
-    .race-ctrl { width: 100%; flex-direction: row; justify-content: flex-end; }
-    .profil-wrap { padding: 1.25rem; }
+    .race-card { flex-wrap: wrap; gap: .75rem; padding: 1rem; }
+    .race-ctrl { width: 100%; flex-direction: row; justify-content: flex-end; margin-top: .25rem; }
+    .race-join-btn, .race-saglik-warn { font-size: .72rem; }
+    .profil-wrap { padding: 1rem; }
+    .participants-modal { padding: 1.5rem 1.25rem 2rem; }
+    .saglik-banner { padding: 1rem; }
+    .profil-row { gap: .5rem; }
+    .profil-row .k { min-width: 90px; font-size: .78rem; }
+    .profil-row .v { font-size: .9rem; }
   }
 
   /* ---- Admin paneli ---- */
