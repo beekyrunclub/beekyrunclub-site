@@ -278,7 +278,7 @@
       let ctrlHtml = "";
       if (!past) {
         if (!userId) {
-          ctrlHtml = `<a class="race-join-cta" href="index.html#kayit">Katılmak için üye ol →</a>`;
+          ctrlHtml = `<button class="race-join-cta" data-action="register" data-race-id="${race.id}" data-race-name="${race.isim}">Katılmak için üye ol →</button>`;
         } else if (!saglikOnay) {
           ctrlHtml = `<span class="race-saglik-warn">Katılmak için <a href="profil.html" style="color:inherit;">sağlık beyanını</a> onayla</span>`;
         } else if (isJoined) {
@@ -308,6 +308,47 @@
 
   render();
 
+  // --- Bekleyen etkinlik katılımı (kayıt sonrası yönlendirme) ---
+  if (userId && saglikOnay) {
+    const pendingRaw = localStorage.getItem("beeky_pending_race");
+    if (pendingRaw) {
+      try {
+        const { race_id, race_name } = JSON.parse(pendingRaw);
+        const pendingRace = races.find(r => r.id === race_id);
+        localStorage.removeItem("beeky_pending_race");
+
+        if (pendingRace && !joined[race_id]) {
+          const katilimci = entryCounts[race_id] || 0;
+          const kontenjan = pendingRace.kontenjan || null;
+          const dolu = kontenjan !== null && katilimci >= kontenjan;
+
+          if (!dolu) {
+            const hasDists = Array.isArray(pendingRace.mesafeler) && pendingRace.mesafeler.length > 0;
+            if (!hasDists) {
+              const { error } = await sb.from("race_entries")
+                .upsert({ user_id: userId, race_id, mesafe_secimi: null }, { onConflict: "user_id,race_id" });
+              if (!error) {
+                joined[race_id] = { mesafe: null };
+                entryCounts[race_id] = (entryCounts[race_id] || 0) + 1;
+                render();
+                const notice = document.createElement("div");
+                notice.style.cssText = "position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-family:var(--display);font-weight:700;font-size:.85rem;letter-spacing:.05em;padding:.75rem 1.5rem;border-radius:4px;z-index:9999;white-space:nowrap;";
+                notice.textContent = `✓ "${race_name}" etkinliğine katıldın!`;
+                document.body.appendChild(notice);
+                setTimeout(() => notice.remove(), 4000);
+              }
+            } else {
+              // Mesafe seçimi gereken etkinlik — picker'ı aç
+              pickerOpen.add(race_id);
+              render();
+              document.querySelector(`[data-race-id="${race_id}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          }
+        }
+      } catch (_) {}
+    }
+  }
+
   // --- Katıl / Vazgeç ---
   listEl.addEventListener("click", async function (ev) {
     const target = ev.target.closest("[data-action]");
@@ -315,7 +356,17 @@
 
     const action = target.dataset.action;
     const raceId = target.dataset.raceId;
-    const race   = races.find(r => r.id === raceId);
+
+    if (action === "register") {
+      localStorage.setItem("beeky_pending_race", JSON.stringify({
+        race_id:   raceId,
+        race_name: target.dataset.raceName
+      }));
+      window.location.href = "index.html#kayit";
+      return;
+    }
+
+    const race = races.find(r => r.id === raceId);
     if (!race) return;
 
     const hasDists = Array.isArray(race.mesafeler) && race.mesafeler.length > 0;

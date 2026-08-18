@@ -386,7 +386,10 @@ setupForm(
         saglik_onay:     saglik
       }));
       resetBtns();
-      status.textContent = "Hesabın oluşturuldu. Girişini tamamlamak için e-postana gelen onay bağlantısına tıkla.";
+      const pendingRaceRaw = localStorage.getItem("beeky_pending_race");
+      const pendingRaceName = pendingRaceRaw ? (() => { try { return JSON.parse(pendingRaceRaw).race_name; } catch(_){return null;} })() : null;
+      status.innerHTML = "Hesabın oluşturuldu. Girişini tamamlamak için e-postana gelen onay bağlantısına tıkla."
+        + (pendingRaceName ? `<br><br>Onayladıktan sonra <a href="takvim.html" style="color:inherit;font-weight:700;">"${pendingRaceName}" etkinliğine katılmak için takvime dön →</a>` : "");
       status.className = "form-status ok show";
       return;
     }
@@ -423,6 +426,9 @@ setupForm(
     successBox.hidden = false;
     resetBtns();
     updateAuthUI();
+    if (localStorage.getItem("beeky_pending_race")) {
+      setTimeout(() => { window.location.href = "takvim.html"; }, 1500);
+    }
   });
 })();
 
