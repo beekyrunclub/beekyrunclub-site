@@ -37,10 +37,10 @@ const sb = window.supabase
 
   const nextSun = new Date(now);
   nextSun.setDate(now.getDate() + ((0 - day + 7) % 7 || 7));
-  nextSun.setHours(8, 0, 0, 0);
-  if (day === 0 && hour < 8) { nextSun.setDate(now.getDate()); nextSun.setHours(8, 0, 0, 0); }
+  nextSun.setHours(9, 0, 0, 0);
+  if (day === 0 && hour < 9) { nextSun.setDate(now.getDate()); nextSun.setHours(9, 0, 0, 0); }
 
-  if (nextSun < nextWed) { next = "PAZAR"; time = "08:00"; }
+  if (nextSun < nextWed) { next = "PAZAR"; time = "09:00"; }
 
   dayEl.textContent = next;
   timeEl.textContent = time;
