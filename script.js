@@ -19,6 +19,12 @@ function esc(v) {
   ));
 }
 
+// Bugünün tarihi "YYYY-MM-DD" — yerel saatle (toISOString UTC verir, gece 00-03 arası dünü döndürür)
+function localToday() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 // Yıl bilgisi (footer)
 (function () {
   const yearEl = document.getElementById("year");
@@ -486,8 +492,7 @@ setupForm(
       } else {
         profile = { ...profile, saglik_onay: true };
         document.getElementById("saglikBanner").hidden = true;
-        if (typeof loadRaces === "function") await loadRaces();
-        else renderRaces && renderRaces();
+        await loadRaces();
       }
     });
   }
@@ -568,11 +573,16 @@ setupForm(
   // --- Yarış Takvimi ---
   const MONTHS = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
 
+  // loadRaces birden çok kez çağrılır (sağlık onayı, admin kaydet/sil); tıklama dinleyicisi
+  // bir kez bağlanır ve her yüklemede güncel veriyi kullanan işleyiciye yönlenir
+  let racesClickHandler = null;
+  let racesListenerBound = false;
+
   async function loadRaces() {
     const listEl = document.getElementById("racesList");
     if (!listEl) return;
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = localToday();
     const [racesRes, entriesRes, countsRes] = await Promise.all([
       sb.from("races").select("*").order("tarih"),
       sb.from("race_entries").select("race_id, mesafe_secimi").eq("user_id", userId),
@@ -666,7 +676,7 @@ setupForm(
 
     renderRaces();
 
-    listEl.addEventListener("click", async function (ev) {
+    racesClickHandler = async function (ev) {
       const target = ev.target.closest("[data-action]");
       if (!target || target.disabled) return;
 
@@ -714,10 +724,17 @@ setupForm(
         if (!error) {
           entryCounts[raceId] = Math.max(0, (entryCounts[raceId] || 0) - 1);
           delete joined[raceId];
+        } else {
+          alert("Kayıt silinemedi: " + error.message);
         }
         renderRaces();
       }
-    });
+    };
+
+    if (!racesListenerBound) {
+      listEl.addEventListener("click", (ev) => racesClickHandler(ev));
+      racesListenerBound = true;
+    }
   }
 
   await loadRaces();
@@ -857,7 +874,7 @@ setupForm(
       }
 
       apAllRaces = data;
-      const today = new Date().toISOString().slice(0, 10);
+      const today = localToday();
 
       if (data.length === 0) {
         apListEl.innerHTML = '<div class="admin-empty">Henüz yarış eklenmedi.</div>';
@@ -1090,13 +1107,17 @@ setupForm(
   let editingId = null;
 
   function getFormData() {
+    const kontenjanVal = parseInt(document.getElementById("rKontenjan").value, 10);
+    const turEl = form.querySelector('input[name="tur"]:checked');
     return {
       isim:      document.getElementById("rIsim").value.trim(),
       tarih:     document.getElementById("rTarih").value,
       konum:     document.getElementById("rKonum").value.trim() || null,
       url:       document.getElementById("rUrl").value.trim() || null,
       mesafeler: document.getElementById("rMesafeler").value
-        .split(",").map(s => s.trim()).filter(Boolean)
+        .split(",").map(s => s.trim()).filter(Boolean),
+      kontenjan: isNaN(kontenjanVal) || kontenjanVal < 1 ? null : kontenjanVal,
+      tur:       turEl ? turEl.value : "etkinlik"
     };
   }
 
@@ -1106,6 +1127,9 @@ setupForm(
     document.getElementById("rKonum").value     = race.konum || "";
     document.getElementById("rUrl").value       = race.url   || "";
     document.getElementById("rMesafeler").value = (race.mesafeler || []).join(", ");
+    document.getElementById("rKontenjan").value = race.kontenjan != null ? race.kontenjan : "";
+    const turRadio = form.querySelector(`input[name="tur"][value="${race.tur === "kos" ? "kos" : "etkinlik"}"]`);
+    if (turRadio) turRadio.checked = true;
     editingId = race.id;
     formTitleEl.innerHTML = `Yarışı <em>düzenle.</em>`;
     submitBtn.textContent = "GÜNCELLE →";
@@ -1200,7 +1224,7 @@ setupForm(
     }
 
     allRaces = data;
-    const today = new Date().toISOString().slice(0, 10);
+    const today = localToday();
 
     if (data.length === 0) {
       listEl.innerHTML = '<div class="admin-empty">Henüz yarış eklenmedi.</div>';

@@ -198,7 +198,7 @@
 (async function () {
   const listEl = document.getElementById("racesList");
   const MONTHS = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
-  const today  = new Date().toISOString().slice(0, 10);
+  const today  = localToday();
 
   // --- Oturum ve veri yükle ---
   const { data: { session } } = await sb.auth.getSession();
@@ -415,6 +415,8 @@
       if (!error) {
         entryCounts[raceId] = Math.max(0, (entryCounts[raceId] || 0) - 1);
         delete joined[raceId];
+      } else {
+        alert("Kayıt silinemedi: " + error.message);
       }
       render();
     }

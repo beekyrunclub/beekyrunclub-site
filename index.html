@@ -47,7 +47,7 @@
 
 <!-- ============ HERO ============ -->
 <header class="hero">
-  <video class="hero-video" autoplay muted loop playsinline poster="hero-poster.jpg">
+  <video class="hero-video" autoplay muted loop playsinline>
     <source src="hero.mp4" type="video/mp4" />
   </video>
   <div class="hero-video-overlay"></div>
@@ -571,7 +571,7 @@
   if (!listEl || !sb) return;
 
   const MONTHS = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
-  const today  = new Date().toISOString().slice(0, 10);
+  const today  = localToday();
 
   const { data, error } = await sb.from("races")
     .select("id, isim, tarih, konum")

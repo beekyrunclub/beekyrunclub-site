@@ -43,6 +43,8 @@
   .field-hint {
     font-size: 0.72rem; opacity: 0.55; margin-top: 0.35rem;
   }
+  .tur-toggle { display: flex; gap: 1.5rem; margin-top: .5rem; }
+  .tur-opt { display: flex; align-items: center; gap: .4rem; font-size: .875rem; cursor: pointer; }
 
   /* ---- Yarış listesi ---- */
   .race-admin-card {
@@ -230,6 +232,15 @@
           <form class="form admin-form" id="raceForm" novalidate>
 
             <div class="field full">
+              <label>Tür *</label>
+              <div class="tur-toggle">
+                <label class="tur-opt"><input type="radio" name="tur" value="etkinlik" checked /> Etkinlik</label>
+                <label class="tur-opt"><input type="radio" name="tur" value="kos" /> Standart Koşu</label>
+              </div>
+              <span class="field-hint">Etkinlikler takvim sayfasında herkese gösterilir</span>
+            </div>
+
+            <div class="field full">
               <label for="rIsim">Yarış Adı *</label>
               <input id="rIsim" name="isim" type="text" required
                 placeholder="Vodafone İstanbul Yarı Maratonu" />
@@ -255,6 +266,12 @@
             <div class="field full">
               <label for="rUrl">Kayıt / Bilgi Linki</label>
               <input id="rUrl" name="url" type="url" placeholder="https://..." />
+            </div>
+
+            <div class="field full">
+              <label for="rKontenjan">Kontenjan</label>
+              <input id="rKontenjan" name="kontenjan" type="number" min="1" placeholder="Boş bırakırsan sınırsız" />
+              <span class="field-hint">Sınırlı katılım istiyorsan kişi sayısını gir</span>
             </div>
 
             <div class="form-status" id="raceFormStatus"></div>
