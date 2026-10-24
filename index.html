@@ -591,8 +591,8 @@
       <a class="ev-card" href="takvim.html">
         <div class="ev-date"><span class="d">${d.getDate()}</span><span class="m">${MONTHS[d.getMonth()]}</span></div>
         <div class="ev-body">
-          <div class="ev-name">${race.isim}</div>
-          ${race.konum ? `<div class="ev-meta">${race.konum}</div>` : ""}
+          <div class="ev-name">${esc(race.isim)}</div>
+          ${race.konum ? `<div class="ev-meta">${esc(race.konum)}</div>` : ""}
         </div>
         <span class="ev-arr">→</span>
       </a>`;

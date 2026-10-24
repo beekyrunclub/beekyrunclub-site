@@ -221,7 +221,7 @@
       <div class="race-empty">
         <div class="icon">⚠</div>
         <h3>Yüklenemedi</h3>
-        <p style="font-size:.8rem;opacity:.6;">${racesRes.error.message}</p>
+        <p style="font-size:.8rem;opacity:.6;">${esc(racesRes.error.message)}</p>
       </div>`;
     return;
   }
@@ -276,35 +276,35 @@
           <span class="race-pick-label">Mesafe:</span>
           <div class="race-dist-opts">
             ${race.mesafeler.map(m =>
-              `<button class="race-dist-opt" data-action="pick" data-race-id="${race.id}" data-dist="${m}">${m}</button>`
+              `<button class="race-dist-opt" data-action="pick" data-race-id="${esc(race.id)}" data-dist="${esc(m)}">${esc(m)}</button>`
             ).join("")}
           </div>
-          <button class="race-cancel-dist" data-action="cancel" data-race-id="${race.id}">İptal</button>
+          <button class="race-cancel-dist" data-action="cancel" data-race-id="${esc(race.id)}">İptal</button>
         </div>` : "";
 
       let ctrlHtml = "";
       if (!past) {
         if (!userId) {
-          ctrlHtml = `<button class="race-join-cta" data-action="register" data-race-id="${race.id}" data-race-name="${race.isim}">Katılmak için üye ol →</button>`;
+          ctrlHtml = `<button class="race-join-cta" data-action="register" data-race-id="${esc(race.id)}" data-race-name="${esc(race.isim)}">Katılmak için üye ol →</button>`;
         } else if (!saglikOnay) {
           ctrlHtml = `<span class="race-saglik-warn">Katılmak için <a href="profil.html" style="color:inherit;">sağlık beyanını</a> onayla</span>`;
         } else if (isJoined) {
           ctrlHtml = `
-            <div class="race-joined-info">✓ Katılıyorum${myDist ? ` · ${myDist}` : ""}</div>
-            <button class="race-join-btn leave" data-action="leave" data-race-id="${race.id}">Vazgeç</button>`;
+            <div class="race-joined-info">✓ Katılıyorum${myDist ? ` · ${esc(myDist)}` : ""}</div>
+            <button class="race-join-btn leave" data-action="leave" data-race-id="${esc(race.id)}">Vazgeç</button>`;
         } else if (dolu) {
           ctrlHtml = `<span class="race-saglik-warn">Kontenjan doldu</span>`;
         } else if (!showPicker) {
-          ctrlHtml = `<button class="race-join-btn" data-action="join" data-race-id="${race.id}">Katılacağım →</button>`;
+          ctrlHtml = `<button class="race-join-btn" data-action="join" data-race-id="${esc(race.id)}">Katılacağım →</button>`;
         }
       }
 
       return `
-        <div class="race-card ${isJoined ? "joined" : ""} ${past ? "race-past" : ""}" data-race-id="${race.id}">
+        <div class="race-card ${isJoined ? "joined" : ""} ${past ? "race-past" : ""}" data-race-id="${esc(race.id)}">
           <div class="race-date"><span class="d">${d.getDate()}</span><span class="m">${MONTHS[d.getMonth()]}</span></div>
           <div class="race-body">
-            <div class="race-name">${race.isim}</div>
-            ${metaParts.length ? `<div class="race-meta">${metaParts.join(" · ")}</div>` : ""}
+            <div class="race-name">${esc(race.isim)}</div>
+            ${metaParts.length ? `<div class="race-meta">${metaParts.map(esc).join(" · ")}</div>` : ""}
             ${kontenjanHtml}
             ${pickerHtml}
           </div>
@@ -348,7 +348,7 @@
               // Mesafe seçimi gereken etkinlik — picker'ı aç
               pickerOpen.add(race_id);
               render();
-              document.querySelector(`[data-race-id="${race_id}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+              document.querySelector(`[data-race-id="${CSS.escape(race_id)}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" });
             }
           }
         }
@@ -389,6 +389,8 @@
         if (!error) {
           if (!joined[raceId]) entryCounts[raceId] = (entryCounts[raceId] || 0) + 1;
           joined[raceId] = { mesafe: null };
+        } else {
+          alert("Katılım kaydedilemedi: " + error.message);
         }
         render();
       }
@@ -400,6 +402,8 @@
         if (!joined[raceId]) entryCounts[raceId] = (entryCounts[raceId] || 0) + 1;
         joined[raceId] = { mesafe: dist };
         pickerOpen.delete(raceId);
+      } else {
+        alert("Katılım kaydedilemedi: " + error.message);
       }
       render();
     } else if (action === "cancel") {

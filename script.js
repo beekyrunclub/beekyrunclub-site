@@ -11,6 +11,14 @@ const sb = window.supabase
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   : null;
 
+/* Veritabanından/kullanıcıdan gelen değeri HTML'e basmadan önce kaçışla (XSS önlemi).
+   innerHTML içine giren her dinamik değer bundan geçmeli. */
+function esc(v) {
+  return String(v ?? "").replace(/[&<>"']/g, (c) => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+
 // Yıl bilgisi (footer)
 (function () {
   const yearEl = document.getElementById("year");
@@ -121,30 +129,13 @@ async function updateAuthUI() {
 updateAuthUI();
 
 /* Supabase auth state değişikliklerini reaktif izle.
-   SIGNED_IN: direkt giriş veya e-posta onayı sonrası otomatik oturum.
-   Her iki durumda da bekleyen profil varsa oluştur. */
+   Profil satırı kayıt anında veritabanı trigger'ı (handle_new_user) ile
+   oluşturulur; burada yalnızca arayüz güncellenir. */
 if (sb) {
-  sb.auth.onAuthStateChange(async function (event, session) {
+  // Callback async değil: içinde Supabase çağrısı beklemek oturum kilidini tıkayabilir
+  sb.auth.onAuthStateChange(function (event, session) {
     if (event === "SIGNED_IN" && session) {
-      const raw = localStorage.getItem("beeky_pending_profile");
-      if (raw) {
-        try {
-          const profileData = JSON.parse(raw);
-          // Sadece bu kaydı oluşturan kullanıcıya uygula
-          if (profileData._email && profileData._email !== session.user.email) {
-            localStorage.removeItem("beeky_pending_profile");
-          } else {
-            const { _email, ...fields } = profileData;
-            const { data: existing } = await sb.from("profiles").select("id").eq("id", session.user.id).single();
-            if (!existing) {
-              const { error } = await sb.from("profiles").insert({ id: session.user.id, ...fields });
-              if (!error) localStorage.removeItem("beeky_pending_profile");
-            } else {
-              localStorage.removeItem("beeky_pending_profile");
-            }
-          }
-        } catch (_e) { /* sessizce geç */ }
-      }
+      localStorage.removeItem("beeky_pending_profile"); // eski sürümden kalan veri
       updateAuthUI();
     } else if (event === "PASSWORD_RECOVERY") {
       // E-posta sıfırlama linki tıklandı; sifre-sifirla.html'deyse formu aç, değilse oraya yönlendir
@@ -373,53 +364,25 @@ setupForm(
       return;
     }
 
-    // E-posta onayı açıksa session gelmez — profil verisini sonrası için sakla
+    // E-posta onayı açıksa session gelmez — profil zaten trigger ile oluştu, onay beklenir
     if (!data.session) {
-      localStorage.setItem("beeky_pending_profile", JSON.stringify({
-        _email:          email,
-        ad_soyad:        ad,
-        telefon:         tel || null,
-        yas_araligi:     yas || null,
-        tempo_seviyesi:  tempo || null,
-        katilim_tercihi: katilim || null,
-        bulten_izni:     bulten,
-        saglik_onay:     saglik
-      }));
       resetBtns();
       const pendingRaceRaw = localStorage.getItem("beeky_pending_race");
       const pendingRaceName = pendingRaceRaw ? (() => { try { return JSON.parse(pendingRaceRaw).race_name; } catch(_){return null;} })() : null;
       status.innerHTML = "Hesabın oluşturuldu. Girişini tamamlamak için e-postana gelen onay bağlantısına tıkla."
-        + (pendingRaceName ? `<br><br>Onayladıktan sonra <a href="takvim.html" style="color:inherit;font-weight:700;">"${pendingRaceName}" etkinliğine katılmak için takvime dön →</a>` : "");
+        + (pendingRaceName ? `<br><br>Onayladıktan sonra <a href="takvim.html" style="color:inherit;font-weight:700;">"${esc(pendingRaceName)}" etkinliğine katılmak için takvime dön →</a>` : "");
       status.className = "form-status ok show";
       return;
     }
 
-    // 2) Profil satırını kaydet
-    const { error: pErr } = await sb.from("profiles").insert({
-      id:              data.user.id,
-      ad_soyad:        ad,
-      telefon:         tel || null,
-      yas_araligi:     yas || null,
-      tempo_seviyesi:  tempo || null,
-      katilim_tercihi: katilim || null,
-      bulten_izni:     bulten,
-      saglik_onay:     saglik
-    });
-    if (pErr) {
-      resetBtns();
-      status.textContent = "Profil kaydedilemedi: " + pErr.message;
-      status.className = "form-status err show";
-      return;
-    }
-
-    // 3) Eski bildirim akışını da besle (şifre HARİÇ) — beklemeden, en iyi çaba
+    // 2) Eski bildirim akışını da besle (şifre HARİÇ) — beklemeden, en iyi çaba
     try {
       const fd = new FormData(form);
       fd.delete("password");
       fetch(SCRIPT_URL, { method: "POST", body: fd });
     } catch (e) { /* sessizce geç */ }
 
-    // 4) Başarı
+    // 3) Başarı
     form.hidden = true;
     successMsg.textContent =
       "Aramıza hoş geldin! Hesabın oluşturuldu ve giriş yaptın. İyi ki Beeky.";
@@ -666,10 +629,10 @@ setupForm(
             <span class="race-pick-label">Mesafe:</span>
             <div class="race-dist-opts">
               ${race.mesafeler.map(m =>
-                `<button class="race-dist-opt" data-action="pick" data-race-id="${race.id}" data-dist="${m}">${m}</button>`
+                `<button class="race-dist-opt" data-action="pick" data-race-id="${esc(race.id)}" data-dist="${esc(m)}">${esc(m)}</button>`
               ).join("")}
             </div>
-            <button class="race-cancel-dist" data-action="cancel" data-race-id="${race.id}">İptal</button>
+            <button class="race-cancel-dist" data-action="cancel" data-race-id="${esc(race.id)}">İptal</button>
           </div>` : "";
 
         let ctrlHtml = "";
@@ -678,21 +641,21 @@ setupForm(
             ctrlHtml = `<span class="race-saglik-warn">Yarışa katılmak için sağlık beyanını onayla</span>`;
           } else if (isJoined) {
             ctrlHtml = `
-              <div class="race-joined-info">✓ Katılıyorum${myDist ? ` · ${myDist}` : ""}</div>
-              <button class="race-join-btn leave" data-action="leave" data-race-id="${race.id}">Vazgeç</button>`;
+              <div class="race-joined-info">✓ Katılıyorum${myDist ? ` · ${esc(myDist)}` : ""}</div>
+              <button class="race-join-btn leave" data-action="leave" data-race-id="${esc(race.id)}">Vazgeç</button>`;
           } else if (dolu) {
             ctrlHtml = `<span class="race-saglik-warn">Kontenjan doldu</span>`;
           } else if (!showPicker) {
-            ctrlHtml = `<button class="race-join-btn" data-action="join" data-race-id="${race.id}">Katılacağım →</button>`;
+            ctrlHtml = `<button class="race-join-btn" data-action="join" data-race-id="${esc(race.id)}">Katılacağım →</button>`;
           }
         }
 
         return `
-          <div class="race-card ${isJoined ? "joined" : ""} ${past ? "race-past" : ""}" data-race-id="${race.id}">
+          <div class="race-card ${isJoined ? "joined" : ""} ${past ? "race-past" : ""}" data-race-id="${esc(race.id)}">
             <div class="race-date"><span class="d">${d.getDate()}</span><span class="m">${MONTHS[d.getMonth()]}</span></div>
             <div class="race-body">
-              <div class="race-name">${race.isim}</div>
-              ${metaParts.length ? `<div class="race-meta">${metaParts.join(" · ")}</div>` : ""}
+              <div class="race-name">${esc(race.isim)}</div>
+              ${metaParts.length ? `<div class="race-meta">${metaParts.map(esc).join(" · ")}</div>` : ""}
               ${kontenjanHtml}
               ${pickerHtml}
             </div>
@@ -725,6 +688,8 @@ setupForm(
           if (!error) {
             if (!joined[raceId]) entryCounts[raceId] = (entryCounts[raceId] || 0) + 1;
             joined[raceId] = { mesafe: null };
+          } else {
+            alert("Katılım kaydedilemedi: " + error.message);
           }
           renderRaces();
         }
@@ -736,6 +701,8 @@ setupForm(
           if (!joined[raceId]) entryCounts[raceId] = (entryCounts[raceId] || 0) + 1;
           joined[raceId] = { mesafe: dist };
           pickerOpen.delete(raceId);
+        } else {
+          alert("Katılım kaydedilemedi: " + error.message);
         }
         renderRaces();
       } else if (action === "cancel") {
@@ -840,7 +807,7 @@ setupForm(
 
       if (error) {
         countEl.textContent = "";
-        bodyEl.innerHTML = `<p style="color:#bf3b3b;">Yüklenemedi: ${error.message}</p>`;
+        bodyEl.innerHTML = `<p style="color:#bf3b3b;">Yüklenemedi: ${esc(error.message)}</p>`;
         return;
       }
 
@@ -858,16 +825,16 @@ setupForm(
       bodyEl.innerHTML = entries.map((e, i) => {
         const contactParts = [e.telefon, e.email].filter(Boolean);
         const contactHtml = contactParts.length
-          ? `<div class="participant-contact">${contactParts.join(" · ")}</div>`
+          ? `<div class="participant-contact">${contactParts.map(esc).join(" · ")}</div>`
           : "";
         return `
           <div class="participant-row">
             <span class="participant-num">${i + 1}.</span>
             <div class="participant-info">
-              <div class="participant-name">${e.ad_soyad || "—"}</div>
+              <div class="participant-name">${esc(e.ad_soyad || "—")}</div>
               ${contactHtml}
             </div>
-            ${e.mesafe_secimi ? `<span class="participant-dist">${e.mesafe_secimi}</span>` : ""}
+            ${e.mesafe_secimi ? `<span class="participant-dist">${esc(e.mesafe_secimi)}</span>` : ""}
           </div>`;
       }).join("");
     }
@@ -885,7 +852,7 @@ setupForm(
       const { data, error } = await sb.from("races").select("*").order("tarih");
 
       if (error || !data) {
-        apListEl.innerHTML = `<p style="color:#bf3b3b;">Yüklenemedi: ${error?.message || ""}</p>`;
+        apListEl.innerHTML = `<p style="color:#bf3b3b;">Yüklenemedi: ${esc(error?.message)}</p>`;
         return;
       }
 
@@ -901,19 +868,19 @@ setupForm(
         const d       = new Date(race.tarih + "T00:00:00");
         const dateStr = `${d.getDate()} ${MONTHS_A[d.getMonth()]} ${d.getFullYear()}`;
         const past    = race.tarih < today;
-        const dists   = (race.mesafeler || []).map(m => `<span class="dist-tag">${m}</span>`).join("");
+        const dists   = (race.mesafeler || []).map(m => `<span class="dist-tag">${esc(m)}</span>`).join("");
 
         return `
           <div class="race-admin-card ${past ? "past" : ""}">
             <div class="race-admin-info">
-              <div class="race-admin-name">${race.isim}</div>
-              <div class="race-admin-meta">${dateStr}${race.konum ? " · " + race.konum : ""}</div>
+              <div class="race-admin-name">${esc(race.isim)}</div>
+              <div class="race-admin-meta">${dateStr}${race.konum ? " · " + esc(race.konum) : ""}</div>
               ${dists ? `<div class="race-admin-dists">${dists}</div>` : ""}
             </div>
             <div class="race-admin-actions">
-              <button class="btn-ghost sm" data-ap-participants="${race.id}" data-ap-participants-name="${race.isim}">Katılımcılar</button>
-              <button class="btn-ghost sm" data-ap-edit="${race.id}">Düzenle</button>
-              <button class="btn-del" data-ap-del="${race.id}">Sil</button>
+              <button class="btn-ghost sm" data-ap-participants="${esc(race.id)}" data-ap-participants-name="${esc(race.isim)}">Katılımcılar</button>
+              <button class="btn-ghost sm" data-ap-edit="${esc(race.id)}">Düzenle</button>
+              <button class="btn-del" data-ap-del="${esc(race.id)}">Sil</button>
             </div>
           </div>`;
       }).join("");
@@ -1179,14 +1146,12 @@ setupForm(
     modal.hidden = false;
     document.body.style.overflow = "hidden";
 
-    const { data: entries, error } = await sb
-      .from("race_entries")
-      .select("user_id, mesafe_secimi")
-      .eq("race_id", raceId);
+    // RLS race_entries'te yalnızca kendi kaydını gösterir; tüm liste admin kontrollü RPC'den gelir
+    const { data: entries, error } = await sb.rpc("get_race_participants", { race_id_input: raceId });
 
     if (error) {
       countEl.textContent = "";
-      bodyEl.innerHTML = `<p style="color:#bf3b3b;">Yüklenemedi: ${error.message}</p>`;
+      bodyEl.innerHTML = `<p style="color:#bf3b3b;">Yüklenemedi: ${esc(error.message)}</p>`;
       return;
     }
 
@@ -1196,31 +1161,17 @@ setupForm(
       return;
     }
 
-    const userIds = entries.map(e => e.user_id);
-    const { data: profileRows } = await sb
-      .from("profiles")
-      .select("id, ad_soyad, telefon, email")
-      .in("id", userIds);
-
-    const pMap = {};
-    (profileRows || []).forEach(p => { pMap[p.id] = p; });
-
-    entries.sort((a, b) => {
-      const na = pMap[a.user_id]?.ad_soyad || "";
-      const nb = pMap[b.user_id]?.ad_soyad || "";
-      return na.localeCompare(nb, "tr");
-    });
+    entries.sort((a, b) => (a.ad_soyad || "").localeCompare(b.ad_soyad || "", "tr"));
 
     countEl.textContent = `${entries.length} katılımcı`;
     bodyEl.innerHTML = entries.map((e, i) => {
-      const p = pMap[e.user_id] || {};
-      const contact = p.telefon || p.email || "";
+      const contact = e.telefon || e.email || "";
       return `
         <div class="participant-row">
           <span class="participant-num">${i + 1}.</span>
-          <span class="participant-name">${p.ad_soyad || "—"}</span>
-          ${e.mesafe_secimi ? `<span class="participant-dist">${e.mesafe_secimi}</span>` : ""}
-          ${contact ? `<span class="participant-contact">${contact}</span>` : ""}
+          <span class="participant-name">${esc(e.ad_soyad || "—")}</span>
+          ${e.mesafe_secimi ? `<span class="participant-dist">${esc(e.mesafe_secimi)}</span>` : ""}
+          ${contact ? `<span class="participant-contact">${esc(contact)}</span>` : ""}
         </div>`;
     }).join("");
   }
@@ -1244,7 +1195,7 @@ setupForm(
     const { data, error } = await sb.from("races").select("*").order("tarih");
 
     if (error || !data) {
-      listEl.innerHTML = `<p style="color:#bf3b3b;">Yüklenemedi: ${error?.message || ""}</p>`;
+      listEl.innerHTML = `<p style="color:#bf3b3b;">Yüklenemedi: ${esc(error?.message)}</p>`;
       return;
     }
 
@@ -1260,19 +1211,19 @@ setupForm(
       const d       = new Date(race.tarih + "T00:00:00");
       const dateStr = `${d.getDate()} ${MONTHS_A[d.getMonth()]} ${d.getFullYear()}`;
       const past    = race.tarih < today;
-      const dists   = (race.mesafeler || []).map(m => `<span class="dist-tag">${m}</span>`).join("");
+      const dists   = (race.mesafeler || []).map(m => `<span class="dist-tag">${esc(m)}</span>`).join("");
 
       return `
         <div class="race-admin-card ${past ? "past" : ""}">
           <div class="race-admin-info">
-            <div class="race-admin-name">${race.isim}</div>
-            <div class="race-admin-meta">${dateStr}${race.konum ? " · " + race.konum : ""}</div>
+            <div class="race-admin-name">${esc(race.isim)}</div>
+            <div class="race-admin-meta">${dateStr}${race.konum ? " · " + esc(race.konum) : ""}</div>
             ${dists ? `<div class="race-admin-dists">${dists}</div>` : ""}
           </div>
           <div class="race-admin-actions">
-            <button class="btn-ghost sm" data-participants-id="${race.id}" data-participants-name="${race.isim}">Katılımcılar</button>
-            <button class="btn-ghost sm" data-edit-id="${race.id}">Düzenle</button>
-            <button class="btn-del" data-del-id="${race.id}">Sil</button>
+            <button class="btn-ghost sm" data-participants-id="${esc(race.id)}" data-participants-name="${esc(race.isim)}">Katılımcılar</button>
+            <button class="btn-ghost sm" data-edit-id="${esc(race.id)}">Düzenle</button>
+            <button class="btn-del" data-del-id="${esc(race.id)}">Sil</button>
           </div>
         </div>`;
     }).join("");
