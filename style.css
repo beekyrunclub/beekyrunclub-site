@@ -7,6 +7,9 @@
     --black: #0A0A0A;
     --white: #FFFFFF;
     --line: rgba(10, 10, 10, 0.12);
+    /* Sponsor (Kroffee) marka renkleri — logodan alındı */
+    --kroffee-green: #6D7B59;
+    --kroffee-cream: #E5E2C8;
 
     --display: "Big Shoulders Display", "Impact", sans-serif;
     --body: "Instrument Sans", system-ui, sans-serif;
@@ -870,21 +873,63 @@
     line-height: 1.7;
   }
 
+  .sponsor-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.75rem;
+    margin-top: 1.75rem;
+  }
+
+  .sponsor-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--blue-ink);
+    text-decoration: none;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1.5px solid currentColor;
+    padding-bottom: 0.2rem;
+    transition: color 0.3s ease;
+  }
+
+  .sponsor-link:hover { color: var(--blue); }
+
+  .sponsor-link svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* Logo paneli sponsorun kendi marka renginde */
   .sponsor-logo {
-    aspect-ratio: 1;
-    background: var(--blue);
-    color: var(--cream);
+    aspect-ratio: 4 / 3;
+    background: var(--kroffee-green);
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    font-family: var(--display);
-    font-weight: 800;
-    font-size: 1.5rem;
-    letter-spacing: 0.1em;
-    line-height: 1;
-    padding: 2rem;
+    padding: 2.5rem;
+    min-width: 0;
+    transition: background 0.3s ease;
   }
+
+  .sponsor-logo:hover,
+  .sponsor-logo:focus-visible { background: #5E6B4C; }
+
+  .sponsor-logo img {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    min-width: 0; /* flex öğesi gerçek genişliğinin altına küçülebilsin — mobilde taşmayı önler */
+    height: auto;
+    transition: transform 0.35s ease;
+  }
+
+  .sponsor-logo:hover img { transform: scale(1.04); }
 
   /* ============ FORMS ============ */
   #kayit { background: var(--blue-ink); color: var(--cream); }
@@ -1474,6 +1519,7 @@
 
     .sponsor-card { padding: 3rem 1.5rem; }
     .sponsor-card::before { left: 1rem; }
+    .sponsor-logo { aspect-ratio: 16 / 9; padding: 2rem; }
 
     .gallery-grid {
       grid-template-columns: repeat(2, 1fr);
@@ -1578,6 +1624,17 @@
     font-size: 0.98rem;
     line-height: 1.6;
     opacity: 0.75;
+  }
+
+  /* Sponsor logosu maske olarak: rengi metinle birlikte değişir (hover'da krem olur) */
+  .banner .banner-logo {
+    display: block;
+    width: 150px;
+    aspect-ratio: 599.4 / 181.1;
+    margin-top: 1.25rem;
+    background-color: currentColor;
+    -webkit-mask: url("kroffee-logo.svg") no-repeat center / contain;
+    mask: url("kroffee-logo.svg") no-repeat center / contain;
   }
 
   .banner .banner-go {
