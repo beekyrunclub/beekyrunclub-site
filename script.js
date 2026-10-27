@@ -35,6 +35,7 @@ function localToday() {
 (function () {
   const dayEl = document.getElementById("nextDay");
   const timeEl = document.getElementById("nextTime");
+  const placeEl = document.getElementById("nextPlace");
   if (!dayEl || !timeEl) return;
 
   const now = new Date();
@@ -43,21 +44,23 @@ function localToday() {
 
   let next = "ÇARŞAMBA";
   let time = "21:00";
+  let place = "Müjdat Gürsu Stadı · Silivri";
 
+  // Kaç gün sonra: koşu günü ve saati henüz geçmediyse bugün (0), aksi halde bir sonraki hafta.
+  // Gün farkı tek seferde eklenir; önce +7 atıp sonra günü geri yazmak ay sonunda yanlış aya düşüyordu.
   const nextWed = new Date(now);
-  nextWed.setDate(now.getDate() + ((3 - day + 7) % 7 || 7));
+  nextWed.setDate(now.getDate() + (day === 3 && hour < 21 ? 0 : ((3 - day + 7) % 7 || 7)));
   nextWed.setHours(21, 0, 0, 0);
-  if (day === 3 && hour < 21) { nextWed.setDate(now.getDate()); nextWed.setHours(21, 0, 0, 0); }
 
   const nextSun = new Date(now);
-  nextSun.setDate(now.getDate() + ((0 - day + 7) % 7 || 7));
+  nextSun.setDate(now.getDate() + (day === 0 && hour < 9 ? 0 : ((0 - day + 7) % 7 || 7)));
   nextSun.setHours(9, 0, 0, 0);
-  if (day === 0 && hour < 9) { nextSun.setDate(now.getDate()); nextSun.setHours(9, 0, 0, 0); }
 
-  if (nextSun < nextWed) { next = "PAZAR"; time = "09:00"; }
+  if (nextSun < nextWed) { next = "PAZAR"; time = "09:00"; place = "Kroffee · Silivri Sahil"; }
 
   dayEl.textContent = next;
   timeEl.textContent = time;
+  if (placeEl) placeEl.textContent = place;
 })();
 
 // Scroll ile beliren öğeler
